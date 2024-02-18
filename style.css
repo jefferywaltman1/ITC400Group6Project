@@ -1,0 +1,191 @@
+
+/* .navBar nav ul {
+    list-style-type: none; /
+    padding: 0;
+    margin: 0;
+}
+
+.navBar nav ul li {
+    display: inline-block;
+    margin-right: 20px; 
+}
+
+.navBar nav ul li a {
+    color: #D8762C; 
+    text-decoration: none;
+    font-weight: bold; 
+    cursor: default; 
+} */
+/* .navBar {
+    position: absolute;
+    width: 100%;
+    height: 15.3%;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+    background: #2D2D2D;
+    box-shadow: 0px 10px 17px rgba(0, 0, 0, 0.5);
+    border-radius: 0px 0px 15px 15px;
+} */
+
+body{
+    position: absolute;
+    width: 100%;
+    height: 85%;
+    bottom: 0px;
+    }
+header{
+    position: fixed;
+    width: 100%;
+    height: 15%;
+    left: 0px;
+    top: 0px;
+        }
+html{
+
+    width: 100%;
+    height: 100%;
+    
+    background: linear-gradient(180deg, #3F3F49 25.32%, #1A1A1A 100%);
+    }
+.TopBar_Rectangle{
+position: absolute;
+width: 100%;
+height: 100%;
+left: 0px;
+top: 0px;
+
+background: #2D2D2D;
+box-shadow: 0px 10px 17px rgba(0, 0, 0, 0.5);
+border-radius: 0px 0px 15px 15px;
+}
+.TopBar_Rectangle{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    
+    background: #2D2D2D;
+    box-shadow: 0px 10px 17px rgba(0, 0, 0, 0.5);
+    border-radius: 0px 0px 15px 15px;
+}
+    
+.HeaderText{
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 130%;
+    text-decoration: underline;
+    /* or 66px */
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    
+    color: #D8762C;
+    }
+
+.PlayNowPos{
+    width: auto;
+    margin-left: 17.8%;
+}
+
+.LearnNowPos{
+    width: auto;
+    margin-left: 6.5%;
+}
+.GallaryPos{
+    width: auto;
+    margin-left: 6.5%;
+}
+
+.DL-ICON {
+    float: left;
+    left: 2.8%;
+    height: 90%;
+    top: 0px;
+    z-index: 10;
+}
+
+.LoginBox{
+    box-sizing: border-box;
+    margin-left: 6.5%;
+    width: 7.9%;
+    height: 42.7%;
+    top: 28.65%;
+    display: inline-flex;
+    
+    background: #2D2D2D;
+    border: 5px solid #D8762C;
+    border-radius: 20px;
+    }
+
+.DanImage img{
+    bottom: 0px;
+    position: absolute;
+}
+
+.DanSeal img {
+position: absolute;
+left: 1570px;
+top: 780px;
+}
+
+.LoginTxt{
+    text-decoration: none !important;
+}
+
+
+.Verse1 {
+position: absolute;
+left: 680px;
+top: 250px;
+font-family: 'Jockey One';
+font-style: normal;
+font-weight: 400;
+font-size: 40px;
+line-height: 130%;
+display: flex;
+align-items: center;
+text-align: center;
+color: #D8762C;
+text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
+transform: rotate(8.27deg);
+}
+
+.Verse2 {
+
+    position: absolute;
+    left: 680px;
+    top: 520px;
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 130%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #D8762C;
+    text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
+    transform: rotate(8.27deg);
+
+}
+
+.Verse3 {
+    position: absolute;
+    left: 680px;
+    top: 750px;
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 130%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #D8762C;
+    text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
+    transform: rotate(8.27deg);
+}
