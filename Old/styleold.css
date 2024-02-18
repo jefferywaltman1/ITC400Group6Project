@@ -1,0 +1,171 @@
+:root {
+    --card-width: 118px; /* Adjusted for 75% size */
+    --card-height: 165px; /* Adjusted for 75% size */
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    text-align: center;
+    margin-bottom: auto; /* Push everything else to the bottom */
+}
+
+.card-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px; /* Adjust based on preference */
+    width: 100%;
+    padding: 10px 0;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* This ensures spacing between child elements */
+    height: calc(100vh - 60px); /* Adjust based on your header height */
+    padding-bottom: var(--card-height); /* Ensure enough space for the hand at the bottom */
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Prevents scrolling to ensure everything fits */
+}
+
+.card {
+    position: relative;
+    height: var(--card-height);
+    width: var(--card-width);
+    perspective: 1000px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    margin: 0 5px; /* Spacing between cards */
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.card-img {
+    height: 100%;
+    width: 100%; /* Ensure the image covers the card */
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}
+
+.play-area-container {
+    position: fixed; /* Needed for absolute positioning of the Ready button */
+    left: 50%;
+    right: 50%;
+    display: flex;
+    justify-content: center; /* Keeps play area centered */
+    align-items: center; /* Vertically centers if needed, adjust as per design */
+    height: auto; /* Or set a specific height if needed */
+    margin: 20px 0; /* Ensure some space around the container */
+}
+
+.play-area {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Keeps the play area as 4 columns */
+    gap: 10px; /* Adjust the space between cards as needed */
+    /* Ensure no movement: set a fixed size or min-content if the size should adapt to content */
+}
+
+#readyButton {
+    position: fixed; /* Use fixed positioning to place the button relative to the viewport */
+    left: 50%; /* Center the button horizontally */
+    bottom: 20px; /* Position it 20px up from the bottom of the screen */
+    transform: translateX(-50%); /* Adjust horizontally to truly center it */
+    z-index: 1000; /* High z-index to ensure it appears above other elements */
+    padding: 10px;
+    cursor: pointer;
+    background-color: #FFFFFF; /* Add background color for visibility */
+    border: 1px solid #000000; /* Add border for visibility */
+    border-radius: 5px; /* Optional: Adds rounded corners for aesthetics */
+}
+
+.play-area .card:nth-child(-n+4) { /* Selects the first 4 cards, which make up the top row */
+    transform: rotate(180deg);
+}
+
+.play-area .card {
+    filter: grayscale(100%); /* Make card back gray */
+    cursor: pointer; /* Indicate these can be interacted with */
+}
+
+.card.selected {
+    margin-top: -10px;
+    border: 20px solid green; /* Make border thicker */
+}
+
+/* Commenting out to remove flip effect on hover
+.card:hover .card-inner {
+    transform: rotateY(180deg);
+}
+*/
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 350px; /* Set the width of the sidebar */
+    height: 70vh;
+    background-color: #2C2F33; /* Discord-like dark gray */
+    border-bottom-right-radius: 10px 10px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    z-index: 5;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Add shadow to the right */
+}
+
+.sidebar-section {
+    padding: 10px;
+    border-bottom: 2px solid #23272A; /* Dark border for separation */
+    z-index: 50;
+}
+
+.sidebar-title {
+    font-size: 16px;
+    text-align: center;
+    margin: 10px 0;
+    color: #7289DA; /* Discord-like bluish color */
+    z-index: 80;
+}
+
+#cardInfo {
+    text-align: center; /* Center content */
+}
+
+#chat {
+    display: none; /* Hide chat by default */
+}
+
+/* If you want to add hover effect for interactivity */
+.sidebar-section:hover {
+    background-color: #3A3F44; /* Slightly lighter on hover */
+}
