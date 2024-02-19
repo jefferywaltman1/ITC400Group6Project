@@ -93,8 +93,8 @@ z-index: 1000;
 .DanImage {
     position: fixed;
     float: left;
-    left: 2.8%;
-    height: 95%;
+    left: -1%;
+    width: 29vw;
     bottom: -16.3%;
     z-index: 10;
 }
@@ -111,12 +111,13 @@ z-index: 1000;
 
 
 .TxtScript {
-position: relative;
-display: inline-block;
-margin-top: 11%;
-margin-left: 32%;
-margin-right: 19%;
-transform: rotate(8.27deg);
+    position: relative;
+    display: flex;
+    margin-top: 17vh;
+    margin-left: 32vw;
+    margin-right: 19vw;
+    transform: rotate(8.27deg);
+    flex-direction: column;
 }
 
 .QuoteTxt{
