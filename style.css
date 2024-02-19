@@ -18,6 +18,7 @@ html{
     
     background: linear-gradient(180deg, #3F3F49 25.32%, #1A1A1A 100%);
     }
+    
 .TopBar_Rectangle{
 position: absolute;
 width: 100%;
@@ -132,39 +133,4 @@ transform: rotate(8.27deg);
     text-decoration: none !important;
     padding-bottom: 5%;
     font-size: 1.9rem !important;
-}
-.Verse2 {
-
-    position: absolute;
-    left: 680px;
-    top: 520px;
-    font-family: 'Jockey One';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 40px;
-    line-height: 130%;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: #D8762C;
-    text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
-    /* transform: rotate(8.27deg); */
-
-}
-
-.Verse3 {
-    position: absolute;
-    left: 680px;
-    top: 750px;
-    font-family: 'Jockey One';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 40px;
-    line-height: 130%;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    color: #D8762C;
-    text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
-    /* transform: rotate(8.27deg); */
 }
