@@ -6,7 +6,7 @@ body{
       
 html {
     width: 100%;
-    min-height: 100%; /* Ensure at least full viewport height */
+    min-height: 50vh; /* Ensure at least full viewport height */
     background: linear-gradient(180deg, #3F3F49 25.32%, #1A1A1A 100%);
     background-attachment: fixed; /* Keep the gradient fixed */
     background-repeat: no-repeat; /* Prevent background from repeating */
