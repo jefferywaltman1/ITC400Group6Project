@@ -1,3 +1,24 @@
+/* Customizes the whole scrollbar */
+::-webkit-scrollbar {
+    width: 12px; /* Adjust the width of the scrollbar */
+}
+
+/* Customizes the scrollbar track */
+::-webkit-scrollbar-track {
+    background: #545463; /* Color of the track */
+}
+
+/* Customizes the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background: #D8762C; /* Color of the thumb */
+    border-radius: 10px; /* Rounded corners for the thumb */
+}
+
+/* Optionally, style the thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #bf6d29; /* Slightly darker shade of the thumb color for hover effect */
+}
+
 body{
     padding-top: 15vh;
     margin: 0;
@@ -265,4 +286,11 @@ z-index: 1000;
 .ShadowForText{
     text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
     margin-bottom: 80px;
+}
+
+.TextLeftAlign{
+    text-align: left!important;
+    display: flex;
+    width: 100%;
+    padding-left: 2%;
 }
