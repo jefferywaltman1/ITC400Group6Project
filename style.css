@@ -6,7 +6,7 @@ body{
       
 html {
     width: 100%;
-    min-height: 50vh; /* Ensure at least full viewport height */
+    min-height: 100vh; /* Ensure at least full viewport height */
     background: linear-gradient(180deg, #3F3F49 25.32%, #1A1A1A 100%);
     background-attachment: fixed; /* Keep the gradient fixed */
     background-repeat: no-repeat; /* Prevent background from repeating */
@@ -45,40 +45,47 @@ z-index: 1000;
     text-align: center;
     color: #D8762C;
     align-items: center;
+    cursor: pointer;
     }
 
 .PlayNowPos{
     width: auto;
-    margin-left: 17.8%;
 }
 
 .LearnNowPos{
     width: auto;
-    margin-left: 6.5%;
+    margin-left: 15vw;
+    margin-right: 15vw;
 }
 .GallaryPos{
     width: auto;
-    margin-left: 6.5%;
+}
+
+.HeaderTextDiv{
+    display: flex;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .DL_ICON {
+    position: absolute;
     float: left;
-    left: 2.8%;
     height: 90%;
-    top: 0px;
-    z-index: 10;
 }
 
 .LoginBox{
+    position: absolute;
+    display: flex;
+    right: 2vw;
     box-sizing: border-box;
-    margin-left: 17.5%;
-    width: 7.9%;
+    width: 8vw;
     height: 7.5vh;
-    display: inline-flex;
     background: #2D2D2D;
     border: 5px solid #D8762C;
     border-radius: 20px;
     margin-top: auto;
+    transform: translateY(50%);
     margin-bottom: auto;
 }
 
@@ -125,3 +132,30 @@ z-index: 1000;
     padding-bottom: 5%;
     font-size: 1.9rem !important;
 }
+
+/* LoginScreenCSS */
+.LoginDiv{
+    height: 85vh;
+    width: 50vw;
+    border-right: #D8762C;
+    border-width: 3px;
+}
+.vertical-bar {
+    width: 5px;
+    height: 65vh;
+    position: fixed;
+    bottom: 12.5vh;
+    left: 50vw;
+    background: #D8762C;
+    border-radius: 25%;
+    transform: translateX(-50%);
+}
+/* #
+position: absolute;
+width: 724px;
+height: 5px;
+left: 965px;
+top: 246px;
+
+background: #D8762C;
+transform: rotate(90deg); */
