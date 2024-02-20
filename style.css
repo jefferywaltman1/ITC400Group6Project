@@ -201,3 +201,68 @@ z-index: 1000;
     left: auto !important;
     right: 0;
 }
+
+/* Learn To Play Styles */
+.RagnarImage{
+    position: fixed;
+    float: left;
+    left: -8%;
+    height: 55%;
+    bottom: 0%;
+    z-index: 1;
+}
+
+.VeronaImage{
+    position: fixed;
+    float: left;
+    left: 8%;
+    height: 53%;
+    bottom: 0%;
+    z-index: 2;
+}
+
+.WilliamImage{
+    position: fixed;
+    float: right;
+    right: -4%;
+    height: 53%;
+    bottom: 0%;
+    z-index: 2;
+}
+
+.DurosImage{
+    position: fixed;
+    float: right;
+    right: 4%;
+    height: 56%;
+    bottom: 0%;
+    z-index: 1;
+    transform: scaleX(-1);
+}
+
+.HowToPlayDiv{
+    display: flex;
+    position: absolute;
+    width: 90%;
+    z-index: 5;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 5%;
+    margin-top: 5%;
+}
+
+.L2PSectionHead{
+    font-size: 64px!important;
+    text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
+    margin-bottom: 25px;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    border-bottom: 5px solid #D8762C;
+    text-decoration: none!important;
+    box-shadow: 0 10px 6px -6px rgba(0, 0, 0, 0.5);
+}
+
+.ShadowForText{
+    text-shadow: 4px -8px 7px rgba(0, 0, 0, 0.5);
+    margin-bottom: 80px;
+}
