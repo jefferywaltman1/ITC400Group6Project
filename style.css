@@ -294,3 +294,43 @@ z-index: 1000;
     width: 100%;
     padding-left: 2%;
 }
+
+/* Table Styles */
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td {
+    border: 1px solid #D8762C;;
+    text-align: left;
+    padding: 8px;
+    height: 7.3vh;
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 130%;
+    color: #fff;
+  }
+  th {
+    border: 1px solid #D8762C;
+    text-align: left;
+    padding: 8px;
+    text-align: left;
+    padding: 8px;
+    height: 7.3vh;
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 130%;
+    color: #D8762C;;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #545463;;
+  }
+  tr:nth-child(odd) {
+    background-color: #545463;;
+  }
