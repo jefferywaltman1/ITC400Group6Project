@@ -16,3 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/HowToPlay.html';
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('gallery').addEventListener('click', function() {
+        window.location.href = '/Gallery.html';
+    });
+});
