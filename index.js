@@ -16,9 +16,60 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/HowToPlay.html';
     });
 });
-
+//Navigate to Gallery
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('gallery').addEventListener('click', function() {
         window.location.href = '/Gallery.html';
+    });
+});
+
+// Gallery Fucntion
+fetch('/DLCardMetadata.csv')
+.then(response => response.text())
+.then(csv => {
+    Papa.parse(csv, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            var tableBody = document.getElementById('cardsTable').getElementsByTagName('tbody')[0];
+            results.data.forEach(function(row) {
+                var tr = document.createElement('tr');
+                
+                var imgTd = document.createElement('td');
+                var img = document.createElement('img');
+                img.src = row['Internal ID (String)'];
+                imgTd.appendChild(img);
+                tr.appendChild(imgTd);
+                
+                tr.appendChild(createCell(row['Card Name (string)']));
+                tr.appendChild(createCell(row['Type (String)']));
+                tr.appendChild(createCell(row['Faction (String)']));
+
+                var mightMindCell = createCell('');
+                var mightMindValue = document.createTextNode(row['Value (Int)'] + ' ');
+                mightMindCell.appendChild(mightMindValue);
+                if (row['Might (Boolean)'] === '1') {
+                    var mightIcon = document.createElement('img');
+                    mightIcon.src = '/images/OtherAssets/mighticon.png';
+                    mightMindCell.appendChild(mightIcon);
+                } else if (row['Mind (Boolean)'] === '1') {
+                    var mindIcon = document.createElement('img');
+                    mindIcon.src = '/images/OtherAssets/mindicon.png';
+                    mightMindCell.appendChild(mindIcon);
+                }
+                tr.appendChild(mightMindCell);
+
+                // Placeholder for Effect column which will be added manually or by another CSV column
+                tr.appendChild(createCell(row['Effect (string)'])); // You would add your Effect data here
+
+                tableBody.appendChild(tr);
+            });
+
+            function createCell(text) {
+                var td = document.createElement('td');
+                td.textContent = text;
+                return td;
+            }
+        }
     });
 });

@@ -345,3 +345,16 @@ table {
     margin-top: 5vh;
     margin-left: 7.5vw;
 }
+
+td img {
+    display: block;
+    max-width: 100px; /* Or whatever size you prefer */
+    height: auto;
+}
+
+.might-mind-icon {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+    height: 20px;
+}
