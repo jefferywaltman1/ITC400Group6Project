@@ -1,0 +1,46 @@
+Card Name (string),Type (String),Faction (String),Ability (Boolean),Might (Boolean),Mind (Boolean),Value (Int),Priority (int),Internal ID (String)
+Roulette,Fighter,Independent,1,0,1,1,2,images/23_dl
+Luna,Fighter,Independent,0,1,0,2,0,images/40_dl
+Rain,Fighter,Independent,0,0,1,3,0,images/36_dl
+Helios,Support,Independent,1,0,0,0,2,images/16_dl
+Cleo,Support,Flame,1,0,0,0,3,images/39_dl
+The Boar,Support,Flame,1,0,0,0,3,images/32_dl
+Tako (Not Steve),Fighter,Flame,1,0,1,1,3,images/30_dl
+Malaise,Support,Flame,1,0,0,0,2,images/22_dl
+Ragnar,Fighter,Devil's Luck,0,1,0,3,0,images/34_dl
+Hemlock,Fighter,Flame,1,0,1,2,2,images/17_dl
+Emperor Dominius,Support,Independent,1,0,0,0,3,images/4_dl
+Chip,Fighter,Independent,1,1,0,2,1,images/3_dl
+Blake,Fighter,Flame,0,1,0,2,0,images/12_dl
+Valentine,Fighter,Flame,0,0,1,3,0,images/9_dl
+V,Support,Flame,1,0,0,0,2,images/11_dl
+Little Timmy,Fighter,Flame,1,0,1,1,3,images/6_dl
+Duros,Fighter,Devil's Luck,0,1,0,2,0,images/42_dl
+Cyril,Fighter,Devil's Luck,1,0,1,1,1,images/2_dl
+Verona,Fighter,Devil's Luck,1,0,1,2,2,images/1_dl
+Gravy,Support,Devil's Luck,1,0,0,0,2,images/15_dl
+William,Support,Devil's Luck,1,0,0,0,2,images/13_dl
+Lois Le'cloque,Fighter,Devil's Luck,1,0,1,1,3,images/27_dl
+Big Top,Support,Pirate,1,0,0,0,2,images/19_dl
+Bullet,Fighter,Pirate,1,1,0,2,2,images/25_dl
+Big Bozo,Fighter,Pirate,1,1,0,1,3,images/31_dl
+Blue Blood,Support,Pirate,1,0,0,0,2,images/37_dl
+Eustace Valve,Fighter,Pirate,0,1,0,2,0,images/7_dl
+Lyssa,Support,Devil's Luck,1,0,0,0,2,images/21_dl
+Pearl,Support,Devil's Luck,1,0,0,0,3,images/29_dl
+Long John Magnum,Support,Pirate,1,0,0,0,3,images/18_dl
+Jester,Support,Pirate,1,0,0,0,3,images/10_dl
+Captain Bublebeard,Support,Pirate,1,0,0,0,2,images/38_dl
+Timberlord,Fighter,Pirate,0,1,0,3,0,images/44_dl
+Captain Everest,Fighter,Marine,0,1,0,2,0,images/35_dl
+Dane Goodman,Support,Independent,1,0,0,0,1,images/26_dl
+Lt. Hubris,Support,Marine,1,0,0,0,3,images/33_dl
+Rear Admiral Jefferson,Fighter,Marine,1,0,1,1,1,images/28_dl
+Captain Viridian,Support,Marine,1,0,0,0,1,images/24_dl
+Captian Verona,Support,Marine,1,0,0,0,3,images/14_dl
+Captain Hastings,Support,Marine,1,0,0,0,2,images/41_dl
+Vice Admiral Arzen,Fighter,Marine,1,1,0,2,0,images/20_dl
+Captain Marrow,Fighter,Marine,1,0,1,1,2,images/43_dl
+Vice Admiral Trevor,Fighter,Marine,0,0,1,3,0,images/8_dl
+Atom,Fighter,Independent,1,0,1,1,1,images/45_dl
+Jasper,Support,Independent,1,0,0,0,3,images/5_dl
