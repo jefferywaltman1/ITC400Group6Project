@@ -46,15 +46,18 @@ fetch('/DLCardMetadata.csv')
                 tr.appendChild(createCell(row['Faction (String)']));
 
                 var mightMindCell = createCell('');
+                //mightMindCell.className = 'might-mind-cell';
                 var mightMindValue = document.createTextNode(row['Value (Int)'] + ' ');
                 mightMindCell.appendChild(mightMindValue);
                 if (row['Might (Boolean)'] === '1') {
                     var mightIcon = document.createElement('img');
                     mightIcon.src = '/images/OtherAssets/mighticon.png';
+                    mightIcon.className = 'might-mind-icon';
                     mightMindCell.appendChild(mightIcon);
                 } else if (row['Mind (Boolean)'] === '1') {
                     var mindIcon = document.createElement('img');
                     mindIcon.src = '/images/OtherAssets/mindicon.png';
+                    mindIcon.className = 'might-mind-icon';
                     mightMindCell.appendChild(mindIcon);
                 }
                 tr.appendChild(mightMindCell);
