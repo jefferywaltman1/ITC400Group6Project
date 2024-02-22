@@ -62,8 +62,13 @@ fetch('/DLCardMetadata.csv')
                 }
                 tr.appendChild(mightMindCell);
 
-                // Placeholder for Effect column which will be added manually or by another CSV column
-                tr.appendChild(createCell(row['Effect (string)'])); // You would add your Effect data here
+                var effectText = row['Effect (string)'];
+                    if (row['Ability (Boolean)'] === '1') {
+                        // Remove quotes from effectText if Ability is '0'
+                        effectText = effectText.replace(/"/g, '');
+                    }
+
+                tr.appendChild(createCell(effectText));
 
                 tableBody.appendChild(tr);
             });
