@@ -17,7 +17,11 @@
             <h1 class="HeaderText LearnNowPos" id="LtoP">LEARN TO PLAY</h1>
             <h1 class="HeaderText GallaryPos" id="gallery">GALLERY</h1>
         </div>
-        <div class="LoginBox" id="LoginBox"><h1 class="HeaderText LoginTxt">LOGIN</h1></div> 
+        <% if (loggedIn) { %>
+            <div id="LoginBox" class="UsernameHeaderTxt"><h1 class="HeaderText"><%= username %></h1></div>
+        <% } else { %>
+            <div class="LoginBox" id="LoginBox"><h1 class="HeaderText LoginTxt">LOGIN</h1></div>
+        <% } %>
     </div>
 
     <!-- body -->

@@ -17,38 +17,49 @@
                 <h1 class="HeaderText LearnNowPos" id="LtoP">LEARN TO PLAY</h1>
                 <h1 class="HeaderText GallaryPos" id="gallery">GALLERY</h1>
             </div>
-            {% if (loggedIn) %}
-                <div class="LoginBox"><h1 class="HeaderText LoginTxt">{%= username %}</h1></div>
-            {% else %}
+            <% if (loggedIn) { %>
+                <div id="LoginBox" class="UsernameHeaderTxt"><h1 class="HeaderText"><%= username %></h1></div>
+            <% } else { %>
                 <div class="LoginBox" id="LoginBox"><h1 class="HeaderText LoginTxt">LOGIN</h1></div>
-            {% endif %}
+            <% } %>
         </div>
 
-        
-        <!-- Login -->
-        <div class="LoginDiv">
-            <h1 class="HeaderText">LOGIN</h1>
-            <form class="LoginForm" action="/login" method="POST">
-                <label class="HeaderText NoUnderline" for="fname">USERNAME</label><br>
-                <input class="LoginScreenInputField" type="text" id="lusername" name="username" value=""><br>
-                <label class="HeaderText NoUnderline" for="lname">PASSWORD</label><br>
-                <input class="LoginScreenInputField" type="password" id="lpassword" name="password" value=""><br>
-                <input type="submit" value="SUBMIT" class="LoginSubmitButton">
-          </form>
-        </div>
+        <% if (loggedIn) { %>
+            <!-- logout Button -->
+            <div class="BodyContents">
+                <form class="LogoutForm" action="/logout" method="GET">
+                    <input type="submit" value="LOG OUT" class="LoginSubmitButton">
+                </form>
+            </div>
+        <% } else { %>
 
-        <div class="vertical-bar"></div>
-        <!-- NewUser -->
-        <div class="LoginDiv NewUserPOS">
-            <h1 class="HeaderText">NEW USER</h1>
-            <form class="LoginForm" action="/create-user" method="POST">
-                <label class="HeaderText NoUnderline" for="fname">USERNAME</label><br>
-                <input class="LoginScreenInputField" type="text" id="nusername" name="username" value=""><br>
-                <label class="HeaderText NoUnderline" for="lname">PASSWORD</label><br>
-                <input class="LoginScreenInputField" type="password" id="npassword" name="password" value="">
-                <input type="submit" value="SUBMIT" class="LoginSubmitButton">
-          </form>
-        </div>
+
+
+            <!-- Login -->
+            <div class="LoginDiv">
+                <h1 class="HeaderText">LOGIN</h1>
+                <form class="LoginForm" action="/login" method="POST">
+                    <label class="HeaderText NoUnderline" for="fname">USERNAME</label><br>
+                    <input class="LoginScreenInputField" type="text" id="lusername" name="username" value=""><br>
+                    <label class="HeaderText NoUnderline" for="lname">PASSWORD</label><br>
+                    <input class="LoginScreenInputField" type="password" id="lpassword" name="password" value=""><br>
+                    <input type="submit" value="SUBMIT" class="LoginSubmitButton">
+              </form>
+            </div>
+    
+            <div class="vertical-bar"></div>
+            <!-- NewUser -->
+            <div class="LoginDiv NewUserPOS">
+                <h1 class="HeaderText">NEW USER</h1>
+                <form class="LoginForm" action="/create-user" method="POST">
+                    <label class="HeaderText NoUnderline" for="fname">USERNAME</label><br>
+                    <input class="LoginScreenInputField" type="text" id="nusername" name="username" value=""><br>
+                    <label class="HeaderText NoUnderline" for="lname">PASSWORD</label><br>
+                    <input class="LoginScreenInputField" type="password" id="npassword" name="password" value="">
+                    <input type="submit" value="SUBMIT" class="LoginSubmitButton">
+              </form>
+            </div>
+        <% } %>
         <script src="index.js"></script>
 </body>
 </html>

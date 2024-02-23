@@ -1,25 +1,25 @@
 // Navigate to Login Screen
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('LoginBox').addEventListener('click', function() {
-        window.location.href = '/loginS'; // Point to the route, not the EJS file
+        window.location.href = '/login'; // Point to the route, not the EJS file
     });
 });
 // Navigate to Landing Screen
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('DL_ICON').addEventListener('click', function() {
-        window.location.href = '/index.html';
+        window.location.href = '/LandingPage';
     });
 });
 // Navigate to How To Play Screen
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('LtoP').addEventListener('click', function() {
-        window.location.href = '/HowToPlay.html';
+        window.location.href = '/HowToPlay';
     });
 });
 //Navigate to Gallery
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('gallery').addEventListener('click', function() {
-        window.location.href = '/Gallery.html';
+        window.location.href = '/Gallery';
     });
 });
 
