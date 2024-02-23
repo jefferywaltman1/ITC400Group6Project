@@ -1,85 +1,68 @@
 const express = require('express');
-const session = require('express-session');
-const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
+const sqlite3 = require('sqlite3').verbose();
+const bodyParser = require('body-parser');
+
 const app = express();
 const port = 3000;
 
-// Middleware setup
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
+// Middleware to parse request bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-// Session middleware setup
-app.use(session({
-  secret: 'your secret key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Set to true in production with HTTPS
-}));
-
-// Serve static files from a specified directory
-app.use(express.static('public')); // Change 'public' to your static files directory path
-
-// Database initialization
-let db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err) => {
+// Initialize SQLite database
+const db = new sqlite3.Database('./mydatabase.db', (err) => {
   if (err) {
-    console.error(err.message);
-    return;
-  }
-  console.log('Connected to the SQLite database.');
-});
-
-// Login handler
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  const query = `SELECT * FROM users WHERE username = ?`;
-
-  db.get(query, [username], async (err, row) => {
-    if (err) {
-      res.status(500).send('Error accessing the database');
-      return;
-    }
-    if (row && await bcrypt.compare(password, row.password)) {
-      req.session.userId = row.id; // Assuming your user table has an 'id' column
-      res.redirect('/dashboard'); // Redirect to a logged-in page
-    } else {
-      res.status(401).send('Invalid credentials');
-    }
-  });
-});
-
-// Dashboard access
-app.get('/dashboard', (req, res) => {
-  if (req.session.userId) {
-    res.sendFile(__dirname + '/path_to_dashboard.html'); // Update with the correct path
+    console.error('Could not connect to database', err);
   } else {
-    res.redirect('/login');
+    console.log('Connected to database');
+    // Ensure the users table exists
+    db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
   }
 });
 
-// Create user handler
+// Route to handle user creation
 app.post('/create-user', async (req, res) => {
   const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
-  db.run(query, [username, hashedPassword], function(err) {
+  db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], function(err) {
     if (err) {
-      console.error(err.message);
-      res.send("Failed to create user.");
+      console.error('Error inserting user into database', err);
+      res.status(500).send('Could not create user');
     } else {
-      console.log(`A new row has been inserted with rowid ${this.lastID}`);
-      res.send("User created successfully.");
+      console.log(`A new user has been inserted with rowid: ${this.lastID}`);
+      res.status(200).send('User created successfully');
     }
   });
 });
 
-// Start server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// Route to handle login attempts
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
+    if (err) {
+      console.error('Database error', err);
+      res.status(500).send('Error logging in');
+      return;
+    }
+    if (user) {
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (passwordMatch) {
+        console.log('Login successful');
+        res.status(200).send('Login successful');
+      } else {
+        console.log('Password incorrect');
+        res.status(401).send('Password incorrect');
+      }
+    } else {
+      console.log('User not found');
+      res.status(404).send('User not found');
+    }
+  });
 });
 
-// Ensure database connection is closed on server close
-process.on('exit', () => {
-  db.close();
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
