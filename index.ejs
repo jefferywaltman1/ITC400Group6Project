@@ -1,0 +1,8 @@
+//Username display
+app.set('view engine', 'ejs');
+app.get('/', (req, res) => {
+  res.render('index', { 
+      loggedIn: req.session.userId ? true : false, 
+      username: req.session.username 
+  });
+});

@@ -1,7 +1,7 @@
 // Navigate to Login Screen
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('LoginBox').addEventListener('click', function() {
-        window.location.href = '/LoginScreen.html';
+        window.location.href = '/loginS'; // Point to the route, not the EJS file
     });
 });
 // Navigate to Landing Screen

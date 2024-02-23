@@ -1,68 +1,102 @@
-const express = require('express-session');
-const bcrypt = require('bcrypt');
+const express = require('express');
+const session = require('express-session');
+const SQLiteStore = require('connect-sqlite3')(session);
 const sqlite3 = require('sqlite3').verbose();
-const bodyParser = require('body-parser');
 
 const app = express();
-const port = 3000;
 
-// Middleware to parse request bodies
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.set('view engine', 'ejs');
 
-// Initialize SQLite database
-const db = new sqlite3.Database('./mydatabase.db', (err) => {
-  if (err) {
-    console.error('Could not connect to database', err);
-  } else {
-    console.log('Connected to database');
-    // Ensure the users table exists
-    db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT)");
-  }
+const PORT = process.env.PORT || 3000;
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+app.use(express.static('.'));
+
+
+// Middlewares
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.json()); // for parsing application/json
+
+// Session setup
+app.use(session({
+    store: new SQLiteStore({
+        db: 'mydatabase.db',
+        dir: './' // Directory where mydatabase.db is located
+    }),
+    secret: 'your secret key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: 'auto' }
+}));
+
+app.get('/loginS', (req, res) => {
+  // Assuming 'LoginScreen.ejs' is in the 'views' directory and you want to pass any necessary data to it
+  res.render('LoginScreen', { /* any data you want to pass to the template */ });
 });
 
-// Route to handle user creation
-app.post('/create-user', async (req, res) => {
-  const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
 
-  db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], function(err) {
-    if (err) {
-      console.error('Error inserting user into database', err);
-      res.status(500).send('Could not create user');
-    } else {
-      console.log(`A new user has been inserted with rowid: ${this.lastID}`);
-      res.status(200).send('User created successfully');
-    }
-  });
+// Serve your static files
+//app.use(express.static('/index.html, /index.js, /style.css, /LoginScreen.html, /HowToPlay.html, /Gallery.html, /DLCardMetadata.csv'));
+
+// Your routes go here
+
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+const db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err) => {
+  if (err) return console.error(err.message);
+  console.log('Connected to the SQLite database.');
 });
 
-// Route to handle login attempts
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
+  const sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
 
-  db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
-    if (err) {
-      console.error('Database error', err);
-      res.status(500).send('Error logging in');
-      return;
-    }
-    if (user) {
-      const passwordMatch = await bcrypt.compare(password, users.password);
-      if (passwordMatch) {
-        console.log('Login successful');
-        res.status(200).send('Login successful');
+  db.get(sql, [username, password], (err, row) => {
+      if (err) {
+          res.status(500).send('Error accessing the database');
+      } else if (row) {
+          req.session.userId = row.id; // Set user id in session
+          req.session.username = row.username; // Set username in session
+          res.redirect('/'); // Redirect to home page or dashboard
       } else {
-        console.log('Password incorrect');
-        res.status(401).send('Password incorrect');
+          res.send('Invalid username or password');
       }
+  });
+});
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/LoginScreen.html');
+});
+
+app.post('/create-user', (req, res) => {
+  const { username, password } = req.body;
+  // Ideally, you'll want to hash the password before storing it
+  // For simplicity, this example does not include hashing
+  const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
+
+  db.run(sql, [username, password], function(err) {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Error creating new user');
     } else {
-      console.log('User not found');
-      res.status(404).send('User not found');
+      // "this.lastID" contains the id of the newly inserted user
+      console.log(`A new user has been created with ID: ${this.lastID}`);
+      // Redirect or respond as needed
+      res.redirect('/login'); // Redirect to login page or wherever appropriate
     }
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+//LogOut
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+      if (err) {
+          return console.log(err);
+      }
+      res.redirect('/');
+  });
 });
+
+
