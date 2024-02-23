@@ -67,6 +67,10 @@ app.get('/Gallery', (req, res) => {
   res.render('Gallery', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
 });
 
+app.get('/Lobby', (req, res) => {
+  res.render('Lobby', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
+});
+
 // Login functionality
 // Verifies user credentials against the database, sets session data, and redirects on success
 app.post('/login', (req, res) => {

@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/Gallery';
     });
 });
+//Navigate to Gallery
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('Lobby').addEventListener('click', function() {
+        window.location.href = '/Lobby';
+    });
+});
 
 // Gallery Fucntion
 fetch('/DLCardMetadata.csv')

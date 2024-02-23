@@ -1,3 +1,4 @@
+//command to run would be node init_db.js
 const sqlite3 = require('sqlite3').verbose();
 
 // Open the database
