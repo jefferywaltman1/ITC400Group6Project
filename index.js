@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('CreateALobby').addEventListener('click', function() {
+        window.location.href = '/CreateALobby';
+    });
+});
+
 // Gallery Fucntion
 fetch('/DLCardMetadata.csv')
 .then(response => response.text())
@@ -87,3 +93,28 @@ fetch('/DLCardMetadata.csv')
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Reference the toggle switch and password field
+    var lockGameToggle = document.getElementById('toggle');
+    var passwordField = document.getElementById('lpassword');
+    var passwordLabel = document.querySelectorAll('label[for="lname"]')[0];
+  
+    // Function to show/hide and clear password field
+    function togglePasswordField() {
+      if (lockGameToggle.checked) {
+        passwordField.style.display = '';
+        passwordLabel.style.display = '';
+      } else {
+        passwordField.style.display = 'none';
+        passwordLabel.style.display = 'none';
+        passwordField.value = ''; // Clear the password field when toggled off
+      }
+    }
+  
+    // Initial check in case the checkbox is checked by default
+    togglePasswordField();
+  
+    // Event listener for change on the toggle
+    lockGameToggle.addEventListener('change', togglePasswordField);
+  });

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://fonts.googleapis.com/css?family=Jockey+One" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/OtherAssets/DL_ICON.png">
+</head>
+<body>
+        <!-- Header -->
+        <div class="TopBar_Rectangle">
+            <a href = "#"><img class = "DL_ICON" Id="DL_ICON" src = "images/OtherAssets/DL_ICON.png" alt = "DL_ICON"></a>
+            <div class="HeaderTextDiv">
+                <% if (loggedIn) { %>
+                    <h1 class="HeaderText PlayNowPos" id="Lobby">PLAY NOW</h1>
+                <% } else { %>
+                    <h1 class="HeaderText PlayNowPos" id="LoginBox">PLAY NOW</h1>
+                <% } %>
+                <h1 class="HeaderText LearnNowPos" id="LtoP">LEARN TO PLAY</h1>
+                <h1 class="HeaderText GallaryPos" id="gallery">GALLERY</h1>
+            </div>
+            <% if (loggedIn) { %>
+                <div id="LoginBox" class="UsernameHeaderTxt"><h1 class="HeaderText"><%= username %></h1></div>
+            <% } else { %>
+                <div class="LoginBox" id="LoginBox"><h1 class="HeaderText LoginTxt">LOGIN</h1></div>
+            <% } %>
+        </div>
+
+            <!-- Login -->
+            <div class="CreateLobbyDiv">
+                <h1 class="HeaderText">CREATE A GAME</h1>
+                <form class="CreateLobbyForm" action="/create-lobby" method="POST">
+                    <label class="HeaderText NoUnderline" for="lobname">LOBBY NAME</label><br>
+                    <input class="LoginScreenInputField" type="text" id="Lobname" name="LobbyName" value=""><br>
+                    <label class="HeaderText NoUnderline" for="lockGame">LOCK GAME?</label><br>
+                    <input type="checkbox" id="toggle" class="checkbox" /> <label for="toggle" class="switch"></label><br>
+                    <label class="HeaderText NoUnderline" for="lname">PASSWORD</label><br>
+                    <input class="LoginScreenInputField" type="password" id="lpassword" name="password" value=""><br>
+                    <input type="submit" value="SUBMIT" class="LoginSubmitButton">
+              </form>
+            </div>
+        <script src="index.js"></script>
+</body>
+</html>

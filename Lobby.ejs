@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery</title>
+    <title>Lobby</title>
     <link href="https://fonts.googleapis.com/css?family=Jockey+One" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/OtherAssets/DL_ICON.png">
@@ -29,6 +29,32 @@
         <% } %>
     </div>
     <!-- body -->
+    <div class="LobbyRoomHead">
+        <form Class="SearchForForm">
+            <input class="SearchForLobby" type="Text" id="SearchLobby" name="SearchLobby" value="" placeholder="Search for a lobby...">
+            <input type="submit" value="SUBMIT" class="searchSubmit ">
+        </form>
+        <input type="submit" id="CreateALobby" value="CREATE A GAME" class="CreateALobby">
+    </div>
+    <div class="LobbyBackdrop">
+        <div class="lobbyTitleDiv">
+            <h1 class="HeaderText lobbyTitle">LOBBY NAME</h1>
+            <h1 class="HeaderText lobbyTitle">USERNAME</h1>
+            <h1 class="HeaderText lobbyTitle">LOCKED GAME</h1>
+        </div>
+        <!-- Template of lobbyroom -->
+        <% lobbies.forEach(function(lobby) { %>
+            <div class="lobbyRoom">
+                <h1 class="HeaderText LobbyInfo"><%= lobby.lobbyName %></h1>
+                <h1 class="HeaderText LobbyInfo"><%= lobby.hostUsername %></h1>
+                <h1 class="HeaderText LobbyInfo"><%= lobby.isLocked ? 'Yes' : 'No' %></h1>
+                <form action="/join-lobby/<%= lobby.id %>" method="post">
+                    <input type="submit" value="JOIN" class="JoinButton">
+                </form>
+            </div>
+        <% }); %>
+        <!-- End Of Template of lobbyroom -->
+    </div>
 
     <script src="index.js"></script>
 </body>

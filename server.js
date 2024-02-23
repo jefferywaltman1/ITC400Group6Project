@@ -68,7 +68,30 @@ app.get('/Gallery', (req, res) => {
 });
 
 app.get('/Lobby', (req, res) => {
-  res.render('Lobby', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
+  const sqlSelect = `SELECT * FROM lobbies WHERE playerCount < 2`; // Adjust this query as needed
+  
+  // Fetch lobby data from the database
+  db.all(sqlSelect, [], (err, lobbies) => {
+      if (err) {
+          console.error(err.message);
+          res.status(500).send('Error accessing the database.');
+      } else {
+          // Render the Lobby page with both login status and lobby data
+          res.render('Lobby', {
+              loggedIn: req.session.userId ? true : false,
+              username: req.session.username || '',
+              lobbies: lobbies // Pass the fetched lobby data
+          });
+      }
+  });
+});
+
+app.get('/CreateALobby', (req, res) => {
+  res.render('CreateALobby', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
+});
+
+app.get('/GameRoom', (req, res) => {
+  res.render('GameRoom', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
 });
 
 // Login functionality
@@ -131,4 +154,47 @@ app.get('/logout', (req, res) => {
       }
       res.redirect('/login');
   });
+});
+
+// lobbies
+app.post('/create-lobby', (req, res) => {
+  const { LobbyName, password, toggle } = req.body; // Assuming 'toggle' is your lock game checkbox
+  const isLocked = toggle ? 1 : 0; // Check if the game is locked
+  const hostUsername = req.session.username; // Get username from session
+
+  const sqlInsert = `INSERT INTO lobbies (lobbyName, hostUsername, password, isLocked) VALUES (?, ?, ?, ?)`;
+  
+  // Insert lobby into database
+  db.run(sqlInsert, [LobbyName, hostUsername, password, isLocked], function(err) {
+      if (err) {
+          console.error(err.message);
+          res.status(500).send('Error creating lobby.');
+      } else {
+          console.log(`A new lobby has been created with ID: ${this.lastID}`);
+          res.redirect('/Lobby'); // Redirect to the lobby listing page
+      }
+  });
+});
+
+app.get('/Lobby', (req, res) => {
+  const sqlSelect = `SELECT * FROM lobbies WHERE playerCount < 2`; // Select lobbies that are not full
+  
+  db.all(sqlSelect, [], (err, rows) => {
+      if (err) {
+          console.error(err.message);
+          res.status(500).send('Error accessing the database.');
+      } else {
+          res.render('Lobby', {
+              loggedIn: req.session.userId ? true : false,
+              username: req.session.username || '',
+              lobbies: rows // Pass the lobby data to the template
+          });
+      }
+  });
+});
+
+app.post('/join-lobby/:id', (req, res) => {
+  const lobbyId = req.params.id;
+  // Update logic to increase playerCount and handle full lobbies appropriately
+  // Redirect to GameRoom.ejs or handle as needed
 });
