@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express-session');
 const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
@@ -48,7 +48,7 @@ app.post('/login', (req, res) => {
       return;
     }
     if (user) {
-      const passwordMatch = await bcrypt.compare(password, user.password);
+      const passwordMatch = await bcrypt.compare(password, users.password);
       if (passwordMatch) {
         console.log('Login successful');
         res.status(200).send('Login successful');
