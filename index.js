@@ -118,3 +118,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for change on the toggle
     lockGameToggle.addEventListener('change', togglePasswordField);
   });
+
+  //connect to socket.io
+  document.addEventListener('DOMContentLoaded', () => {
+    const socket = io(); // Connect to the WebSocket server
+
+    // Assume lobbyId is passed to this template somehow, e.g., via a global JS variable
+    socket.emit('joinLobby', '<%= lobbyId %>'); // Send a message to join the lobby
+
+    socket.on('playerJoined', (data) => {
+      console.log(`A new player has joined lobby ${data.lobbyId}: Player ID ${data.playerId}`);
+      // Update the UI accordingly
+    });
+  });

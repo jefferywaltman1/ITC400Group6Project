@@ -1,10 +1,15 @@
 // Required modules and setup
 const express = require('express');
 const session = require('express-session');
+const socketIo = require('socket.io');
+const http = require('http');
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 const SQLiteStore = require('connect-sqlite3')(session); // For storing session info in SQLite
 const sqlite3 = require('sqlite3').verbose(); // For database operations
 
-const app = express();
+
 
 // Setting EJS as the template engine and specifying the views directory
 app.set('view engine', 'ejs');
@@ -41,7 +46,7 @@ app.use(session({
 }));
 
 // Starting the server
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+//app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 // Database connection setup
 const db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -195,6 +200,28 @@ app.get('/Lobby', (req, res) => {
 
 app.post('/join-lobby/:id', (req, res) => {
   const lobbyId = req.params.id;
-  // Update logic to increase playerCount and handle full lobbies appropriately
-  // Redirect to GameRoom.ejs or handle as needed
+  
+  // Instead of directly joining here, redirect to the GameRoom page
+  // And pass the lobbyId to join via WebSocket from the client-side
+  res.render('GameRoom', { lobbyId: lobbyId });
+});
+
+
+// socketsIO
+// Listen on the new server, not the app
+server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+// Socket.IO connection handler
+io.on('connection', (socket) => {
+    console.log('A user connected with socket ID:', socket.id);
+
+    // Handle joining a lobby
+    socket.on('joinLobby', (lobbyId) => {
+        // Here, add logic to join a lobby and notify the other player
+        console.log(`Socket ${socket.id} requested to join lobby ${lobbyId}`);
+        // Example: Add socket to a room named after the lobbyId
+        socket.join(lobbyId);
+        // Notify the lobby that a new player has joined
+        io.to(lobbyId).emit('playerJoined', { lobbyId, playerId: socket.id });
+    });
 });
