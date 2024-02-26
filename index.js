@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/login'; // Point to the route, not the EJS file
     });
 });
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('PlayNowLogin').addEventListener('click', function() {
+        window.location.href = '/login'; // Point to the route, not the EJS file
+    });
+});
 // Navigate to Landing Screen
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('DL_ICON').addEventListener('click', function() {
