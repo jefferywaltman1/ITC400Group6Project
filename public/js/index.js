@@ -136,3 +136,44 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update the UI accordingly
     });
   });
+
+  function joinLobby(lobbyId) {
+    socket.emit('requestJoinLobby', { lobbyId: lobbyId });
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const lobbyId = urlParams.get('lobbyId');
+    
+    if (lobbyId) {
+        socket.emit('requestJoinLobby', { lobbyId: lobbyId });
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize socket connection
+    const socket = io(); // This should be at the top level, ensuring 'socket' is accessible
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const lobbyId = urlParams.get('lobbyId');
+
+    // Ensure we only try to join a lobby if we're actually in a GameRoom with a lobbyId
+    if (lobbyId) {
+        socket.emit('joinLobby', { lobbyId: lobbyId }); // Corrected from 'requestJoinLobby' based on your server code
+    }
+
+    // Listener for color change button
+    document.getElementById('colorChangeButton')?.addEventListener('click', function() {
+        const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+        socket.emit('colorChange', { color: randomColor, lobbyId: lobbyId });
+    });
+
+    // Listening for color update events from the server
+    socket.on('updateColor', ({ color }) => {
+        const button = document.getElementById('colorChangeButton');
+        if (button) {
+            button.style.backgroundColor = color;
+        }
+    });
+});
