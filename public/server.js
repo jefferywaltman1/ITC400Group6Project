@@ -20,7 +20,6 @@ app.set('views', path.join(__dirname));
 const PORT = process.env.PORT || 3000;
 
 // Serving static files from the 'public' directory
-app.use(express.static('public'));
 
 // Default route for the landing page, showing different content based on login status
 app.get('/', (req, res) => {
@@ -29,7 +28,8 @@ app.get('/', (req, res) => {
     username: req.session && req.session.username ? req.session.username : ''
   });
 });
-app.use(express.static('.'));
+
+app.use(express.static('public'));
 
 // Middleware for parsing request bodies and session handling
 app.use(express.urlencoded({ extended: true }));
