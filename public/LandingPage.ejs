@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery</title>
+    <title>Landing Page</title>
     <link href="https://fonts.googleapis.com/css?family=Jockey+One" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/OtherAssets/DL_ICON.png">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.0.2/papaparse.min.js"></script>
 </head>
 <body>
-    <!-- header -->
+    <!-- Header -->
     <div class="TopBar_Rectangle">
         <a href = "#"><img class = "DL_ICON" Id="DL_ICON" src = "images/OtherAssets/DL_ICON.png" alt = "DL_ICON"></a>
         <div class="HeaderTextDiv">
             <% if (loggedIn) { %>
                 <h1 class="HeaderText PlayNowPos" id="Lobby">PLAY NOW</h1>
             <% } else { %>
-                <h1 class="HeaderText PlayNowPos" id="LoginBox">PLAY NOW</h1>
+                <h1 class="HeaderText PlayNowPos" id="PlayNowLogin">PLAY NOW</h1>
             <% } %>
             <h1 class="HeaderText LearnNowPos" id="LtoP">LEARN TO PLAY</h1>
             <h1 class="HeaderText GallaryPos" id="gallery">GALLERY</h1>
@@ -29,27 +28,15 @@
         <% } %>
     </div>
 
-    <!-- body content -->
+    <!-- body -->
     <div class="BodyContents">
-        <div class="GalleryDiv">  
-            <table id="cardsTable">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Faction</th>
-                        <th>Might/Mind</th>
-                        <th>Effect/Quote</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- The rows will be inserted here by JavaScript -->
-                </tbody>
-            </table>
-        </div>
+             <a href = "#"><img class = "DanImage" src = "/images/OtherAssets/Danegoodman.png" alt = "Dan Image"></a>
+             <a href = "#"><img class = "DanSeal" src = "images/OtherAssets/Goodman_seal_of_approval.png" alt = "Dan Seal"></a>
+             <div class="TxtScript"> 
+             <div class = "HeaderText QuoteTxt">Y'know me, Dane Goodman. All my products are top quality! Well, except for the DAN-O-MATIC which may have caused a couple deaths, but my lawyers Suggest that its best I dont Mention that.</div>
+             <div class = "HeaderText QuoteTxt">They said “Make something nice for the Children, It wont replace the orphanage you accidentally blew up, but it may make them forget about it temporarily!”</div>
+             <div class = "HeaderText QuoteTxt">So I Said “What about a card game? Kids love those!” So here we have it, the Legally required card game, as an unintentional side effect its also fun to play! Who’da Thought??”</div>
     </div>
-
-    <script src="index.js"></script>
+        <script src="index.js"></script>
 </body>
 </html>

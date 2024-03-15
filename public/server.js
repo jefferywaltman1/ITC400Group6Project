@@ -20,7 +20,6 @@ app.set('views', path.join(__dirname));
 const PORT = process.env.PORT || 3000;
 
 // Serving static files from the 'public' directory
-app.use(express.static('public'));
 
 // Default route for the landing page, showing different content based on login status
 app.get('/', (req, res) => {
@@ -29,7 +28,8 @@ app.get('/', (req, res) => {
     username: req.session && req.session.username ? req.session.username : ''
   });
 });
-app.use(express.static('.'));
+
+app.use(express.static('public'));
 
 // Middleware for parsing request bodies and session handling
 app.use(express.urlencoded({ extended: true }));
@@ -96,7 +96,17 @@ app.get('/CreateALobby', (req, res) => {
 });
 
 app.get('/GameRoom', (req, res) => {
-  res.render('GameRoom', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
+  // Extract lobbyId from query parameters
+  const lobbyId = req.query.lobbyId;
+
+  // Here you would fetch lobby details from the database using lobbyId if needed
+  // For simplicity, we'll assume the fetched details are directly rendered
+
+  res.render('GameRoom', { 
+    loggedIn: req.session.userId ? true : false, 
+    username: req.session.username || '',
+    lobbyId: lobbyId // Pass the lobbyId to your template
+  });
 });
 
 // Login functionality
@@ -162,22 +172,27 @@ app.get('/logout', (req, res) => {
 });
 
 // lobbies
+// Assuming 'db' is your SQLite connection and 'io' is your Socket.IO instance
 app.post('/create-lobby', (req, res) => {
-  const { LobbyName, password, toggle } = req.body; // Assuming 'toggle' is your lock game checkbox
-  const isLocked = toggle ? 1 : 0; // Check if the game is locked
-  const hostUsername = req.session.username; // Get username from session
+  const { LobbyName, password, toggle } = req.body;
+  const isLocked = toggle ? 1 : 0;
+  const hostUsername = req.session.username;
 
-  const sqlInsert = `INSERT INTO lobbies (lobbyName, hostUsername, password, isLocked) VALUES (?, ?, ?, ?)`;
-  
-  // Insert lobby into database
-  db.run(sqlInsert, [LobbyName, hostUsername, password, isLocked], function(err) {
-      if (err) {
-          console.error(err.message);
-          res.status(500).send('Error creating lobby.');
-      } else {
-          console.log(`A new lobby has been created with ID: ${this.lastID}`);
-          res.redirect('/Lobby'); // Redirect to the lobby listing page
-      }
+  // Initialize playerCount to 1 to include the host
+  const playerCount = 1;
+
+  const sqlInsert = `INSERT INTO lobbies (lobbyName, hostUsername, password, isLocked, playerCount) VALUES (?, ?, ?, ?, ?)`;
+
+  db.run(sqlInsert, [LobbyName, hostUsername, password, isLocked, playerCount], function(err) {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Error creating lobby.');
+    } else {
+      console.log(`A new lobby has been created with ID: ${this.lastID}`);
+
+      // Redirect to the GameRoom with the newly created lobby's ID
+      res.redirect(`/GameRoom?lobbyId=${this.lastID}`);
+    }
   });
 });
 
@@ -200,28 +215,50 @@ app.get('/Lobby', (req, res) => {
 
 app.post('/join-lobby/:id', (req, res) => {
   const lobbyId = req.params.id;
-  
-  // Instead of directly joining here, redirect to the GameRoom page
-  // And pass the lobbyId to join via WebSocket from the client-side
-  res.render('GameRoom', { lobbyId: lobbyId });
+  const maxPlayers = 2; // Define the maximum number of players allowed
+
+  // Query to check if the lobby is full
+  const sqlCheck = `SELECT playerCount FROM lobbies WHERE id = ?`;
+
+  db.get(sqlCheck, [lobbyId], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Error accessing the database.');
+    } else if (row && row.playerCount < maxPlayers) {
+      // If the lobby is not full, update the playerCount
+      const sqlUpdate = `UPDATE lobbies SET playerCount = playerCount + 1 WHERE id = ?`;
+
+      db.run(sqlUpdate, [lobbyId], function(err) {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send('Error joining lobby.');
+        } else {
+          // Redirect to the GameRoom with the lobbyId as a query parameter
+          res.redirect(`/GameRoom?lobbyId=${lobbyId}`);
+        }
+      });
+    } else {
+      // If the lobby is full, send an appropriate response
+      res.send('Lobby is full.');
+    }
+  });
 });
+
+// Socket.IO connection handler
+io.on('connection', (socket) => {
+  socket.on('joinLobby', ({ lobbyId }) => {
+    socket.join(lobbyId);
+    console.log(`Socket ${socket.id} joined lobby ${lobbyId}`);
+  });
+
+  socket.on('colorChange', ({ color, lobbyId }) => {
+    // Broadcast to all in the room, including the sender
+    io.in(lobbyId).emit('updateColor', { color });
+  });
+});
+
 
 
 // socketsIO
 // Listen on the new server, not the app
 server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-
-// Socket.IO connection handler
-io.on('connection', (socket) => {
-    console.log('A user connected with socket ID:', socket.id);
-
-    // Handle joining a lobby
-    socket.on('joinLobby', (lobbyId) => {
-        // Here, add logic to join a lobby and notify the other player
-        console.log(`Socket ${socket.id} requested to join lobby ${lobbyId}`);
-        // Example: Add socket to a room named after the lobbyId
-        socket.join(lobbyId);
-        // Notify the lobby that a new player has joined
-        io.to(lobbyId).emit('playerJoined', { lobbyId, playerId: socket.id });
-    });
-});
