@@ -233,6 +233,7 @@ app.post('/join-lobby/:id', (req, res) => {
       res.status(500).send('Error accessing the database.');
     } else if (row && row.playerCount < maxPlayers) {
       // If the lobby is not full, update the playerCount
+      
       const sqlUpdate = `UPDATE lobbies SET playerCount = playerCount + 1 WHERE id = ?`;
 
       db.run(sqlUpdate, [lobbyId], function(err) {
@@ -251,20 +252,77 @@ app.post('/join-lobby/:id', (req, res) => {
   });
 });
 
+let lobbyCounts = {};
 // Socket.IO connection handler
-io.on('connection', (socket) => {
-  socket.on('joinLobby', ({ lobbyId }) => {
-    socket.join(lobbyId);
-    console.log(`Socket ${socket.id} joined lobby ${lobbyId}`);
+  io.on('connection', (socket) => {
+    socket.on('joinLobby', ({ lobbyId }) => {
+      if (!lobbyCounts[lobbyId]) {
+          lobbyCounts[lobbyId] = 0;
+      }
+      lobbyCounts[lobbyId]++;
+      socket.join(lobbyId);
+      socket.lobbyId = lobbyId;
+
+      // Update the player count in the database based on lobbyCounts
+      updatePlayerCountInDb(lobbyId);
+
+      // Emit the updated count to the lobby
+      io.to(lobbyId).emit('updatePlayerCount', { count: lobbyCounts[lobbyId], lobbyId: lobbyId });
   });
 
+  socket.on('disconnect', () => {
+      const lobbyId = socket.lobbyId;
+      if (lobbyId && lobbyCounts[lobbyId]) {
+          lobbyCounts[lobbyId]--;
+
+          // Update the database with the new count
+          updatePlayerCountInDb(lobbyId);
+
+          if (lobbyCounts[lobbyId] === 0) {
+              delete lobbyCounts[lobbyId];
+              // Optionally, delete the lobby if it's empty
+              deleteLobbyIfEmpty(lobbyId);
+          }
+      }
+  });
+  
   socket.on('colorChange', ({ color, lobbyId }) => {
     // Broadcast to all in the room, including the sender
     io.in(lobbyId).emit('updateColor', { color });
   });
 });
 
+function updatePlayerCountInDb(lobbyId) {
+  // Use the current count from lobbyCounts for the specified lobbyId
+  const currentCount = lobbyCounts[lobbyId] || 0;
+  const sqlUpdate = `UPDATE lobbies SET playerCount = ? WHERE id = ?`;
 
+  db.run(sqlUpdate, [currentCount, lobbyId], (err) => {
+      if (err) {
+          console.error(`Error updating player count in the database for lobby ${lobbyId}: ${err.message}`);
+      } else {
+          console.log(`Set player count for lobby ${lobbyId} to ${currentCount}.`);
+      }
+  });
+}
+
+function deleteLobbyIfEmpty(lobbyId) {
+  db.get(`SELECT playerCount FROM lobbies WHERE id = ?`, [lobbyId], (err, row) => {
+      if (err || !row) {
+          console.error(err?.message || "Lobby not found.");
+          return;
+      }
+      if (row.playerCount <= 0) {
+          db.run(`DELETE FROM lobbies WHERE id = ?`, [lobbyId], (err) => {
+              if (err) {
+                  console.error(`Error deleting empty lobby: ${err.message}`);
+              } else {
+                  console.log(`Deleted empty lobby ${lobbyId}`);
+              }
+          });
+      }
+  });
+}
 
 // socketsIO
 // Listen on the new server, not the app
