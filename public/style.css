@@ -583,3 +583,19 @@ table tr:first-child th:last-child{
   .checkbox { 
     display : none;
  }
+
+ /* Error Text */
+.errorText{
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 200;
+    font-size: 1.5rem;
+    line-height: 100%;
+    display: inline-flex;
+    text-align: center;
+    color: #d82c2c;
+    align-items: center;
+    cursor: pointer;
+    height: 0%;
+    margin: 0 auto;
+    }

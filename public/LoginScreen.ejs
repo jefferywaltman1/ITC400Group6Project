@@ -49,6 +49,9 @@
                     <input class="LoginScreenInputField" type="password" id="lpassword" name="password" value=""><br>
                     <input type="submit" value="SUBMIT" class="LoginSubmitButton">
               </form>
+              <% if (errorMessage) { %>
+                <h1 class ="errorText">***Invalid username or password. Please Try again.***</h1>
+            <% } %>
             </div>
     
             <div class="vertical-bar"></div>
@@ -62,6 +65,9 @@
                     <input class="LoginScreenInputField" type="password" id="npassword" name="password" value="">
                     <input type="submit" value="SUBMIT" class="LoginSubmitButton">
               </form>
+              <% if (existingUserError) { %>
+                <h1 class ="errorText">***User already exist. Please Try again.***</h1>
+            <% } %>
             </div>
         <% } %>
         <script src="index.js"></script>

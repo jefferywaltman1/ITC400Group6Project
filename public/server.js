@@ -57,7 +57,14 @@ const db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err)
 // Navigation routes
 // Each renders a page and passes session data for dynamic content based on login status
 app.get('/login', (req, res) => {
-  res.render('LoginScreen', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
+  const errorMessage = req.query.error === 'invalid' ? 'Invalid username or password. Please try again.' : '';
+  const existingUserError = req.query.existingUserError === 'invalidUser' ? 'User already exist. Please Try again.' : '';
+  res.render('LoginScreen', {
+    loggedIn: req.session.userId ? true : false,
+    username: req.session.username || '',
+    errorMessage: errorMessage, // Pass this variable to your EJS template
+    existingUserError: existingUserError
+  });
 });
 
 app.get('/LandingPage', (req, res) => {
@@ -123,7 +130,7 @@ app.post('/login', (req, res) => {
           req.session.username = row.username;
           res.redirect('/LandingPage');
       } else {
-          res.send('Invalid username or password');
+        res.redirect('/login?error=invalid');
       }
   });
 });
@@ -140,7 +147,7 @@ app.post('/create-user', (req, res) => {
       console.error(err.message);
       res.status(500).send('Error accessing the database.');
     } else if (row) {
-      res.send('User already exists. Please choose a different username.');
+      res.redirect('/login?existingUserError=invalidUser');
     } else {
       // Insert new user
       const sqlInsert = 'INSERT INTO users (username, password) VALUES (?, ?)';
