@@ -8,6 +8,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const SQLiteStore = require('connect-sqlite3')(session); // For storing session info in SQLite
 const sqlite3 = require('sqlite3').verbose(); // For database operations
+const crypto = require('crypto');
 
 
 
@@ -120,15 +121,22 @@ app.get('/GameRoom', (req, res) => {
 // Verifies user credentials against the database, sets session data, and redirects on success
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  const sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
+  const sql = 'SELECT * FROM users WHERE username = ?';
 
-  db.get(sql, [username, password], (err, row) => {
+  db.get(sql, [username], (err, row) => {
       if (err) {
           res.status(500).send('Error accessing the database');
       } else if (row) {
-          req.session.userId = row.id;
-          req.session.username = row.username;
-          res.redirect('/LandingPage');
+          // Hash the provided password with the stored salt
+          const hash = crypto.pbkdf2Sync(password, row.salt, 1000, 64, `sha512`).toString(`hex`);
+          // Compare the hashed password with the stored hash
+          if (hash === row.hashed_password) {
+              req.session.userId = row.id;
+              req.session.username = row.username;
+              res.redirect('/LandingPage');
+          } else {
+              res.redirect('/login?error=invalid');
+          }
       } else {
         res.redirect('/login?error=invalid');
       }
@@ -139,7 +147,13 @@ app.post('/login', (req, res) => {
 // Checks if the user already exists, inserts new user if not, and logs them in by setting session data
 app.post('/create-user', (req, res) => {
   const { username, password } = req.body;
-  
+
+  // Generate a unique salt
+  const salt = crypto.randomBytes(16).toString('hex');
+
+  // Hash the password with the salt
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+
   // Check for existing user
   const sqlCheck = 'SELECT * FROM users WHERE username = ?';
   db.get(sqlCheck, [username], function(err, row) {
@@ -149,10 +163,10 @@ app.post('/create-user', (req, res) => {
     } else if (row) {
       res.redirect('/login?existingUserError=invalidUser');
     } else {
-      // Insert new user
-      const sqlInsert = 'INSERT INTO users (username, password) VALUES (?, ?)';
+      // Insert new user with hashed password and salt
+      const sqlInsert = 'INSERT INTO users (username, hashed_password, salt) VALUES (?, ?, ?)';
       
-      db.run(sqlInsert, [username, password], function(err) {
+      db.run(sqlInsert, [username, hashedPassword, salt], function(err) {
         if (err) {
           console.error(err.message);
           res.status(500).send('Error creating new user.');
