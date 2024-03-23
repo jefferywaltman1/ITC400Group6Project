@@ -151,38 +151,38 @@ app.post('/login', (req, res) => {
 app.post('/create-user', (req, res) => {
   const { username, password } = req.body;
 
-  // Define the password regex pattern
-  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&()-_=+{};:,.<>?\/|\[\]\\]{8,64}$/;
-
-  // Check if the password matches the regex
-  if (!passwordPattern.test(password)) {
-    // If the password does not match, redirect or send an error message
-    return res.redirect('/login?PassReqError=passwordValidationFailed');
-    // Or: return res.status(400).send('Password does not meet requirements.');
-  }
-
-  // Generate a unique salt
-  const salt = crypto.randomBytes(16).toString('hex');
-
-  // Hash the password with the salt
-  const hashedPassword = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
-
-  // Check for existing user
+  // Check for existing user first
   const sqlCheck = 'SELECT * FROM users WHERE username = ?';
   db.get(sqlCheck, [username], function(err, row) {
     if (err) {
       console.error(err.message);
-      res.status(500).send('Error accessing the database.');
+      return res.status(500).send('Error accessing the database.');
     } else if (row) {
-      res.redirect('/login?existingUserError=invalidUser');
+      // If user exists, redirect with error
+      return res.redirect('/login?existingUserError=invalidUser');
     } else {
+      // Define the password regex pattern
+      const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&()-_=+{};:,.<>?\/|\[\]\\]{8,64}$/;
+
+      // Proceed to check if the password matches the regex
+      if (!passwordPattern.test(password)) {
+        // If the password does not match, redirect or send an error message
+        return res.redirect('/login?PassReqError=passwordValidationFailed');
+      }
+
+      // Password meets the requirements, generate a unique salt
+      const salt = crypto.randomBytes(16).toString('hex');
+
+      // Hash the password with the salt
+      const hashedPassword = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+
       // Insert new user with hashed password and salt
       const sqlInsert = 'INSERT INTO users (username, hashed_password, salt) VALUES (?, ?, ?)';
       
       db.run(sqlInsert, [username, hashedPassword, salt], function(err) {
         if (err) {
           console.error(err.message);
-          res.status(500).send('Error creating new user.');
+          return res.status(500).send('Error creating new user.');
         } else {
           console.log(`A new user has been created with ID: ${this.lastID}`);
           // Assuming req.session is set up correctly
