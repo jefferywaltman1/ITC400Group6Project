@@ -599,3 +599,33 @@ table tr:first-child th:last-child{
     height: 0%;
     margin: 0 auto;
     }
+
+    .errorText{
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 200;
+    font-size: 1.5rem;
+    line-height: 100%;
+    display: inline-flex;
+    text-align: center;
+    color: #d82c2c;
+    align-items: center;
+    cursor: pointer;
+    height: 0%;
+    margin: 0 auto;
+    }
+
+    .errorRegex{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 200;
+        font-size: 1.0rem;
+        line-height: 85%;
+        display: inline-flex;
+        text-align: left;
+        color: #d82c2c;
+        align-items: center;
+        cursor: pointer;
+        height: 0%;
+        margin: 0 auto;
+        }

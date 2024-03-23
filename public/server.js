@@ -60,11 +60,14 @@ const db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err)
 app.get('/login', (req, res) => {
   const errorMessage = req.query.error === 'invalid' ? 'Invalid username or password. Please try again.' : '';
   const existingUserError = req.query.existingUserError === 'invalidUser' ? 'User already exist. Please Try again.' : '';
+  // Corrected logic here: Show error message when PassReqError equals 'passwordValidationFailed'
+  const PassReqError = req.query.PassReqError === 'passwordValidationFailed' ? 'Your password did not meet the required criteria: Length: Must be between 8 and 64 characters long. Case Sensitivity: Must include at least one uppercase letter (A-Z) and one lowercase letter (a-z). Numbers: Must include at least one digit (0-9). Special Characters: May include special characters (!@#$%^&()-_=+{};:,.<>?/|[\\]`~).' : '';
   res.render('LoginScreen', {
     loggedIn: req.session.userId ? true : false,
     username: req.session.username || '',
-    errorMessage: errorMessage, // Pass this variable to your EJS template
-    existingUserError: existingUserError
+    errorMessage: errorMessage,
+    existingUserError: existingUserError,
+    PassReqError: PassReqError // Correctly set the error message now
   });
 });
 
@@ -148,6 +151,16 @@ app.post('/login', (req, res) => {
 app.post('/create-user', (req, res) => {
   const { username, password } = req.body;
 
+  // Define the password regex pattern
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&()-_=+{};:,.<>?\/|\[\]\\]{8,64}$/;
+
+  // Check if the password matches the regex
+  if (!passwordPattern.test(password)) {
+    // If the password does not match, redirect or send an error message
+    return res.redirect('/login?PassReqError=passwordValidationFailed');
+    // Or: return res.status(400).send('Password does not meet requirements.');
+  }
+
   // Generate a unique salt
   const salt = crypto.randomBytes(16).toString('hex');
 
@@ -172,6 +185,7 @@ app.post('/create-user', (req, res) => {
           res.status(500).send('Error creating new user.');
         } else {
           console.log(`A new user has been created with ID: ${this.lastID}`);
+          // Assuming req.session is set up correctly
           req.session.userId = this.lastID;
           req.session.username = username;
           res.redirect('/LandingPage');

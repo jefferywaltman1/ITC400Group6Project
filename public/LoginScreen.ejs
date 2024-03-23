@@ -68,6 +68,13 @@
               <% if (existingUserError) { %>
                 <h1 class ="errorText">***User already exist. Please Try again.***</h1>
             <% } %>
+            <% if (PassReqError) { %>
+                <h1 class ="errorRegex">Your password did not meet the required criteria:<br><br>
+                    Length: Must be between 8 and 64 characters long.<br>
+                    Case Sensitivity: Must include at least one uppercase letter (A-Z) and one lowercase letter (a-z).<br>
+                    Numbers: Must include at least one digit (0-9).<br>
+                    Special Characters: May include special characters (!@#$%^&()-_=+{};:,.<>?/|[\]`~).</h1>  
+            <% } %>
             </div>
         <% } %>
         <script src="index.js"></script>
