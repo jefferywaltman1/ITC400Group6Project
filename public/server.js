@@ -206,6 +206,28 @@ app.get('/logout', (req, res) => {
   });
 });
 
+// Add this function to initialize and shuffle a deck of 45 cards
+function initializeDeck() {
+  let deck = Array.from({length: 45}, (_, i) => i + 1); // Creates an array [1, 2, ..., 45]
+  // Shuffle the deck
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]]; // Swap elements
+  }
+  return deck;
+}
+
+let deck = initializeDeck(); // Initialize the deck when the server starts
+
+function dealCard(socket) {
+  if (deck.length > 0) {
+    const card = deck.pop(); // Remove the last card from the deck
+    // Send the card to the client that requested it
+    socket.emit('dealCard', { card: `/images/${card}_dl.png` });
+  } else {
+    console.log("Deck is empty.");
+  }
+}
 // lobbies
 // Assuming 'db' is your SQLite connection and 'io' is your Socket.IO instance
 app.post('/create-lobby', (req, res) => {
@@ -296,6 +318,10 @@ let lobbyCounts = {};
 
       // Emit the updated count to the lobby
       io.to(lobbyId).emit('updatePlayerCount', { count: lobbyCounts[lobbyId], lobbyId: lobbyId });
+
+      socket.on('requestDealCard', () => {
+        dealCard(socket); // Deal a card to the requesting socket
+      });      
   });
 
   socket.on('disconnect', () => {

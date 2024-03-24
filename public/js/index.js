@@ -29,6 +29,20 @@ document.addEventListener('DOMContentLoaded', function() {
             button.style.backgroundColor = color;
         }
     });
+
+    document.getElementById('dealCardButton').addEventListener('click', function() {
+        socket.emit('requestDealCard'); // Request a card from the server
+    });
+    
+    socket.on('dealCard', function(data) {
+        // Update the hand on the client side with the new card image
+        const hand = document.querySelector('.hand');
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card';
+        cardDiv.style.backgroundImage = `url(${data.card})`;
+        hand.appendChild(cardDiv);
+    });
+    
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });
 
