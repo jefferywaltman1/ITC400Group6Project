@@ -583,3 +583,66 @@ table tr:first-child th:last-child{
   .checkbox { 
     display : none;
  }
+
+
+/* Game Field Container */
+.game-field {
+    display: grid;
+    grid-template-columns: repeat(4, auto); /* 4 columns */
+    grid-template-rows: auto auto; /* 2 rows */
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Space between cards */
+    margin-top: 10vh; /* Center vertically in the game room area */
+  }
+  
+  /* Individual Card */
+  .card {
+    width: calc(20vh * 0.7); /* Adjust based on aspect ratio */
+    height: 20vh;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%);
+  }
+  
+  /* Upside Down Card for Opponent */
+  .card.opponent {
+    transform: rotate(180deg); /* Flip the card to appear upside down */
+  }
+  
+  @media (max-width: 768px) {
+    .card {
+      width: calc(30vh * 0.7); /* Adjust for smaller screens */
+      height: 30vh;
+    }
+  }
+
+  /* Hand Container */
+.hand {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Adjust based on your preference */
+  }
+  
+  /* Individual Hand Card */
+  .hand .card {
+    width: calc(20vh * 0.7); /* Matching the game field cards */
+    height: 20vh;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(0); /* Assuming hand cards are not grey */
+    transition: transform 0.3s ease; /* Smooth transition for the hover effect */
+    transform: translateY(40%); /* 60% of the card is visible */
+    cursor: pointer; /* Optional: changes the cursor on hover */
+  }
+  
+  .hand .card:hover {
+    transform: translateY(0); /* The card rises up on hover */
+  }
+  
+  
+  

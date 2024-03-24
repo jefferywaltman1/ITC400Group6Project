@@ -11,9 +11,25 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <h1 class="HeaderText">TestText</h1>
-    <button id="colorChangeButton" onclick="changeColor()" style="padding: 10px; font-size: 16px;">Change Color</button>
-    <p id="playerCount">Connected Players: 0</p>
+    <!-- <h1 class="HeaderText">TestText</h1>
+    <button id="colorChangeButton" onclick="changeColor()" style="padding: 10px; font-size: 16px;">Change Color</button> -->
+    <div class="game-field">
+      <!-- Opponent's Cards (Upside Down) -->
+      <% for(let i = 0; i < 4; i++) { %>
+        <div class="card opponent" style="background-image: url('/images/Cardback.png');"></div>
+      <% } %>
+      <!-- Player's Cards -->
+      <% for(let i = 0; i < 4; i++) { %>
+        <div class="card" style="background-image: url('/images/Cardback.png');"></div>
+      <% } %>
+    </div>
+    
+    <div class="hand">
+      <% for(let i = 0; i < 7; i++) { %> <!-- Loop for up to 7 cards -->
+        <div class="card" style="background-image: url('/images/1_dl.png');"></div>
+      <% } %>
+    </div>
+        
     <script src="/js/index.js"></script>
 </body>
 </html>

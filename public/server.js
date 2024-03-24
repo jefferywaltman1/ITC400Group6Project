@@ -351,7 +351,6 @@ function deleteLobbyIfEmpty(lobbyId) {
       }
   });
 }
-
 // socketsIO
 // Listen on the new server, not the app
 server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
