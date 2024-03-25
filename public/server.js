@@ -394,12 +394,21 @@ function deleteLobbyIfEmpty(lobbyId) {
               if (err) {
                   console.error(`Error deleting empty lobby: ${err.message}`);
               } else {
+                  removeDeckForLobby(lobbyId); // Clean up the deck for the deleted lobby
                   console.log(`Deleted empty lobby ${lobbyId}`);
               }
           });
       }
   });
 }
+//remove deck function to manage memory
+function removeDeckForLobby(lobbyId) {
+  if (lobbyDecks[lobbyId]) {
+      delete lobbyDecks[lobbyId]; // Remove the deck from the map
+      console.log(`Deck for lobby ${lobbyId} removed.`);
+  }
+}
+
 // socketsIO
 // Listen on the new server, not the app
 server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
