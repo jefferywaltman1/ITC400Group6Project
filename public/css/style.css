@@ -644,5 +644,29 @@ table tr:first-child th:last-child{
     transform: translateY(0); /* The card rises up on hover */
   }
   
+  .PlayerHeader {
+    position: fixed;
+    top: 0;
+    left: 50%; /* Center the element from the left side of the viewport */
+    transform: translateX(-50%); /* Shift it back by half of its own width */
+    width: 25vw;
+    height: 7vh;
+    background-color: #2D2D2D;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+  }
+
+  .OpposingPlayerText{
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 130%;
+    text-align: center;
+    color: #D8762C;
+    align-items: center;
+    cursor: pointer;
+    margin: 0;
+    }
   
   
