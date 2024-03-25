@@ -207,32 +207,40 @@ app.get('/logout', (req, res) => {
 });
 
 // Add this function to initialize and shuffle a deck of 45 cards
+// Initialize a map to hold a deck for each lobby
+let lobbyDecks = {};
+
+// Function to create and shuffle a deck
 function initializeDeck() {
-  let deck = Array.from({length: 45}, (_, i) => i + 1); // Creates an array [1, 2, ..., 45]
-  // Shuffle the deck
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]]; // Swap elements
-  }
-  return deck;
+    let deck = Array.from({length: 45}, (_, i) => i + 1);
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    return deck;
 }
 
-let deck = initializeDeck(); // Initialize the deck when the server starts
+// Create a new deck for a lobby
+function createDeckForLobby(lobbyId) {
+    lobbyDecks[lobbyId] = initializeDeck();
+}
 
 // Assuming io, deck, and other relevant variables are already defined as in your initial setup
 
 function dealCardToAllInLobby(lobbyId) {
+  const deck = lobbyDecks[lobbyId];
+  if (!deck || deck.length === 0) {
+      console.log("Deck is empty or not initialized.");
+      // Optionally, emit an event to inform clients the deck is empty or reset it
+      return;
+  }
+
   const socketIds = io.sockets.adapter.rooms.get(lobbyId);
   if (socketIds) {
       socketIds.forEach(socketId => {
           const socket = io.sockets.sockets.get(socketId);
-          if (deck.length > 0) {
-              const card = deck.pop(); // Remove the last card from the deck
-              socket.emit('dealCard', { card: `/images/${card}_dl.png` }); // Send the card to the individual socket
-          } else {
-              console.log("Deck is empty.");
-              // Optionally, emit an event to inform clients the deck is empty
-          }
+          const card = deck.pop(); // Remove the last card from the deck
+          socket.emit('dealCard', { card: `/images/${card}_dl.png` }); // Send the card to the individual socket
       });
   }
 }
@@ -254,12 +262,16 @@ app.post('/create-lobby', (req, res) => {
       res.status(500).send('Error creating lobby.');
     } else {
       console.log(`A new lobby has been created with ID: ${this.lastID}`);
+      
+      // After successfully creating a lobby, initialize a deck for this lobby
+      createDeckForLobby(this.lastID); // Initialize the deck for the new lobby
 
       // Redirect to the GameRoom with the newly created lobby's ID
       res.redirect(`/GameRoom?lobbyId=${this.lastID}`);
     }
   });
 });
+
 
 app.get('/Lobby', (req, res) => {
   const sqlSelect = `SELECT * FROM lobbies WHERE playerCount < 2`; // Select lobbies that are not full
