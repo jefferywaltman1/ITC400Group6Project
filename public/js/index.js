@@ -45,7 +45,3 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });
-
-
-
-

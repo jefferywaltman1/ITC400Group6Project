@@ -219,13 +219,21 @@ function initializeDeck() {
 
 let deck = initializeDeck(); // Initialize the deck when the server starts
 
-function dealCard(socket) {
-  if (deck.length > 0) {
-    const card = deck.pop(); // Remove the last card from the deck
-    // Send the card to the client that requested it
-    socket.emit('dealCard', { card: `/images/${card}_dl.png` });
-  } else {
-    console.log("Deck is empty.");
+// Assuming io, deck, and other relevant variables are already defined as in your initial setup
+
+function dealCardToAllInLobby(lobbyId) {
+  const socketIds = io.sockets.adapter.rooms.get(lobbyId);
+  if (socketIds) {
+      socketIds.forEach(socketId => {
+          const socket = io.sockets.sockets.get(socketId);
+          if (deck.length > 0) {
+              const card = deck.pop(); // Remove the last card from the deck
+              socket.emit('dealCard', { card: `/images/${card}_dl.png` }); // Send the card to the individual socket
+          } else {
+              console.log("Deck is empty.");
+              // Optionally, emit an event to inform clients the deck is empty
+          }
+      });
   }
 }
 // lobbies
@@ -320,7 +328,10 @@ let lobbyCounts = {};
       io.to(lobbyId).emit('updatePlayerCount', { count: lobbyCounts[lobbyId], lobbyId: lobbyId });
 
       socket.on('requestDealCard', () => {
-        dealCard(socket); // Deal a card to the requesting socket
+        const lobbyId = socket.lobbyId; // Make sure this is correctly assigned when a socket joins a lobby
+        if (lobbyId) {
+          dealCardToAllInLobby(lobbyId);
+        }
       });      
   });
 
