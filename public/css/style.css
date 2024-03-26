@@ -656,7 +656,7 @@ table tr:first-child th:last-child{
     border-bottom-right-radius: 25px;
   }
 
-  .OpposingPlayerText{
+.OpposingPlayerText{
     font-family: 'Jockey One';
     font-style: normal;
     font-weight: 400;
@@ -667,6 +667,36 @@ table tr:first-child th:last-child{
     align-items: center;
     cursor: pointer;
     margin: 0;
+    }
+
+.CardPreviewArea {
+    position: fixed;
+    top: 0;
+    left: 0; /* Center the element from the left side of the viewport */
+    width: 25vw;
+    height: 100vh;
+    }
+
+.CardPreviewText{
+    position: relative;
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 130%;
+    text-align: center;
+    color: #D8762C;
+    align-items: center;
+    cursor: pointer;
+    background-color: #2D2D2D;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    text-decoration: underline;
+    padding-bottom: 5px;
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-bottom: 50px;
+    margin-top: 0;
     }
   
   

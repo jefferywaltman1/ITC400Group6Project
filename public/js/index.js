@@ -35,13 +35,40 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     socket.on('dealCard', function(data) {
-        // Update the hand on the client side with the new card image
+        // Assuming `data.card` is the path to the card image
         const hand = document.querySelector('.hand');
         const cardDiv = document.createElement('div');
         cardDiv.className = 'card';
         cardDiv.style.backgroundImage = `url(${data.card})`;
+
+        // Add hover event listeners to show a larger preview
+        cardDiv.addEventListener('mouseenter', function() {
+            showCardPreview(data.card);
+        });
+
+        cardDiv.addEventListener('mouseleave', function() {
+            clearCardPreview();
+        });
+
         hand.appendChild(cardDiv);
     });
+    // Function to display the card preview
+    function showCardPreview(cardImage) {
+        const previewArea = document.querySelector('.CardPreviewArea');
+        // Clear current preview
+        previewArea.innerHTML = '<h1 class="CardPreviewText">Card Preview</h1>';
+        const img = document.createElement('img');
+        img.src = cardImage;
+        img.style.width = '80%'; // Set width to 80% of its container
+        img.style.margin = '0 10%'; // Set margin to 10% on both sides
+        previewArea.appendChild(img);
+    }    
+
+    // Function to clear the card preview
+    function clearCardPreview() {
+        const previewArea = document.querySelector('.CardPreviewArea');
+        previewArea.innerHTML = '<h1 class="CardPreviewText">Card Preview</h1>';
+    }
 
     socket.on('lobbyInfo', ({ users }) => {
         const opponentUsername = users.find(u => u !== currentUserUsername); // currentUserUsername should be dynamically set to the logged-in user's username
