@@ -42,6 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
         cardDiv.style.backgroundImage = `url(${data.card})`;
         hand.appendChild(cardDiv);
     });
-    
+
+    socket.on('lobbyInfo', ({ users }) => {
+        const opponentUsername = users.find(u => u !== currentUserUsername); // currentUserUsername should be dynamically set to the logged-in user's username
+        if (opponentUsername) {
+            document.querySelector('.OpposingPlayerText').textContent = opponentUsername;
+        } else {
+            document.querySelector('.OpposingPlayerText').textContent = "Waiting on Another Player";
+        }
+    });
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

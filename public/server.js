@@ -1,4 +1,3 @@
-// Required modules and setup
 const express = require('express');
 const session = require('express-session');
 const socketIo = require('socket.io');
@@ -9,7 +8,7 @@ const io = socketIo(server);
 const SQLiteStore = require('connect-sqlite3')(session); // For storing session info in SQLite
 const sqlite3 = require('sqlite3').verbose(); // For database operations
 const crypto = require('crypto');
-
+const sharedsession = require("express-socket.io-session");
 
 
 // Setting EJS as the template engine and specifying the views directory
@@ -35,15 +34,22 @@ app.use(express.static('public'));
 // Middleware for parsing request bodies and session handling
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(session({
-    store: new SQLiteStore({
-        db: 'mydatabase.db',
-        dir: './'
-    }),
-    secret: '642e745b83d3b9807cfabbf7352b0d6b08dee2dd8d10327e26ab566c8c918d5417953f869227200a38c91a6cc40194cc4c2d1a35d7ff879b25c9755dd74917f9',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: 'auto' }
+
+const sessionMiddleware = session({
+  store: new SQLiteStore({
+      db: 'mydatabase.db',
+      dir: './'
+  }),
+  secret: '642e745b83d3b9807cfabbf7352b0d6b08dee2dd8d10327e26ab566c8c918d5417953f869227200a38c91a6cc40194cc4c2d1a35d7ff879b25c9755dd74917f9',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: 'auto' }
+});
+
+app.use(sessionMiddleware)
+
+io.use(sharedsession(sessionMiddleware, {
+  autoSave: true
 }));
 
 // Starting the server
@@ -323,22 +329,37 @@ app.post('/join-lobby/:id', (req, res) => {
 });
 
 let lobbyCounts = {};
+let lobbiesInfo = {};
 // Socket.IO connection handler
   io.on('connection', (socket) => {
+    const session = socket.handshake.session;
+    
+    console.log('User connected:', socket.handshake.session.username);
     socket.on('joinLobby', ({ lobbyId }) => {
       if (!lobbyCounts[lobbyId]) {
           lobbyCounts[lobbyId] = 0;
       }
+      if (!lobbiesInfo[lobbyId]) { // Check if the lobbyId key exists in lobbiesInfo
+        lobbiesInfo[lobbyId] = []; // Initialize it as an empty array if it does not exist
+    }
+      const username = session.username;
+      if (!lobbiesInfo[lobbyId].includes(username)) {
+        lobbiesInfo[lobbyId].push(username);
+    }
+      lobbiesInfo[lobbyId].push(username);
+
       lobbyCounts[lobbyId]++;
       socket.join(lobbyId);
       socket.lobbyId = lobbyId;
+
+      io.in(lobbyId).emit('lobbyInfo', { users: lobbiesInfo[lobbyId] });
 
       // Update the player count in the database based on lobbyCounts
       updatePlayerCountInDb(lobbyId);
 
       // Emit the updated count to the lobby
       io.to(lobbyId).emit('updatePlayerCount', { count: lobbyCounts[lobbyId], lobbyId: lobbyId });
-
+      
       socket.on('requestDealCard', () => {
         const lobbyId = socket.lobbyId; // Make sure this is correctly assigned when a socket joins a lobby
         if (lobbyId) {
@@ -349,6 +370,16 @@ let lobbyCounts = {};
 
   socket.on('disconnect', () => {
       const lobbyId = socket.lobbyId;
+      const username = socket.handshake.session.username;
+
+      if (lobbyId && lobbiesInfo[lobbyId]) {
+        const index = lobbiesInfo[lobbyId]?.indexOf(username);
+      if (index !== -1) {
+        lobbiesInfo[lobbyId].splice(index, 1); // Remove username from lobby info
+      }
+        io.in(lobbyId).emit('lobbyInfo', { users: lobbiesInfo[lobbyId] });
+      }
+
       if (lobbyId && lobbyCounts[lobbyId]) {
           lobbyCounts[lobbyId]--;
 
