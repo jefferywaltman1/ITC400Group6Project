@@ -337,22 +337,26 @@ let lobbiesInfo = {};
     console.log('User connected:', socket.handshake.session.username);
     socket.on('joinLobby', ({ lobbyId }) => {
       if (!lobbyCounts[lobbyId]) {
-          lobbyCounts[lobbyId] = 0;
+        lobbyCounts[lobbyId] = 0;
       }
-      if (!lobbiesInfo[lobbyId]) { // Check if the lobbyId key exists in lobbiesInfo
-        lobbiesInfo[lobbyId] = []; // Initialize it as an empty array if it does not exist
-    }
+      if (!lobbiesInfo[lobbyId]) {
+        lobbiesInfo[lobbyId] = {
+          users: [],
+          player1Wins: 0,
+          player2Wins: 0,
+          readyPlayers: []
+        };
+      }
       const username = session.username;
-      if (!lobbiesInfo[lobbyId].includes(username)) {
-        lobbiesInfo[lobbyId].push(username);
-    }
-      lobbiesInfo[lobbyId].push(username);
+      if (!lobbiesInfo[lobbyId].users.includes(username)) { // Corrected to target 'users' array
+        lobbiesInfo[lobbyId].users.push(username);
+      }
 
       lobbyCounts[lobbyId]++;
       socket.join(lobbyId);
       socket.lobbyId = lobbyId;
 
-      io.in(lobbyId).emit('lobbyInfo', { users: lobbiesInfo[lobbyId] });
+      io.in(lobbyId).emit('lobbyInfo', { users: lobbiesInfo[lobbyId].users });
 
       // Update the player count in the database based on lobbyCounts
       updatePlayerCountInDb(lobbyId);
@@ -372,16 +376,39 @@ let lobbiesInfo = {};
       });      
   });
 
+  socket.on('startGame', ({ lobbyId }) => {
+    const username = socket.handshake.session.username;
+    if (!lobbiesInfo[lobbyId].readyPlayers.includes(username)) {
+      lobbiesInfo[lobbyId].readyPlayers.push(username);
+    }
+
+    // If both players are ready, start the game
+    if (lobbiesInfo[lobbyId].readyPlayers.length === 2) {
+      // Reset win counts for a new game
+      lobbiesInfo[lobbyId].player1Wins = 0;
+      lobbiesInfo[lobbyId].player2Wins = 0;
+
+      // Deal 7 cards to each player
+      for (let i = 0; i < 7; i++) {
+        dealCardToAllInLobby(lobbyId);
+      }
+
+      // Notify players that the game has started
+      io.to(lobbyId).emit('gameStarted');
+    }
+  });
+
   socket.on('disconnect', () => {
       const lobbyId = socket.lobbyId;
       const username = socket.handshake.session.username;
 
       if (lobbyId && lobbiesInfo[lobbyId]) {
-        const index = lobbiesInfo[lobbyId]?.indexOf(username);
-      if (index !== -1) {
-        lobbiesInfo[lobbyId].splice(index, 1); // Remove username from lobby info
-      }
-        io.in(lobbyId).emit('lobbyInfo', { users: lobbiesInfo[lobbyId] });
+        // Use the correct property .users to access the array and find the index
+        const index = lobbiesInfo[lobbyId].users.indexOf(username);
+        if (index !== -1) {
+          lobbiesInfo[lobbyId].users.splice(index, 1); // Remove username from users array
+        }
+        io.in(lobbyId).emit('lobbyInfo', { users: lobbiesInfo[lobbyId].users });
       }
 
       if (lobbyId && lobbyCounts[lobbyId]) {
