@@ -699,4 +699,27 @@ table tr:first-child th:last-child{
     margin-top: 0;
     }
   
+/* Discard Pile Container */
+.discard-pile {
+    position: absolute;
+    right: 0; /* Position to the right */
+    top: 50%; /* Center vertically relative to the viewport */
+    transform: translateY(-50%); /* Adjust vertically to center */
+    width: calc(20vh * 0.7); /* Width of the discard card */
+    height: 20vh; /* Height of the discard card */
+    display: flex;
+    justify-content: center; /* Center the card horizontally */
+    align-items: center; /* Center the card vertically */
+  }
+  
+  /* Discard Card */
+  .card.discard {
+    filter: grayscale(100%) brightness(0.5) sepia(1) hue-rotate(-180deg) saturate(15); /* Tint the card back blue */
+    width: 100%; /* Full width of the container */
+    height: 100%; /* Full height of the container */
+    background-size: cover;
+    background-position: center;
+    transform: translateX(-200%)
+  }
+  
   
