@@ -701,10 +701,6 @@ table tr:first-child th:last-child{
   
 /* Discard Pile Container */
 .discard-pile {
-    position: absolute;
-    right: 0; /* Position to the right */
-    top: 50%; /* Center vertically relative to the viewport */
-    transform: translateY(-50%); /* Adjust vertically to center */
     width: calc(20vh * 0.7); /* Width of the discard card */
     height: 20vh; /* Height of the discard card */
     display: flex;
@@ -714,12 +710,38 @@ table tr:first-child th:last-child{
   
   /* Discard Card */
   .card.discard {
-    filter: grayscale(100%) brightness(0.5) sepia(1) hue-rotate(-180deg) saturate(15); /* Tint the card back blue */
+    filter: grayscale(100%) brightness(0.5) sepia(1) hue-rotate(-180deg) saturate(8); /* Tint the card back blue */
     width: 100%; /* Full width of the container */
     height: 100%; /* Full height of the container */
     background-size: cover;
     background-position: center;
-    transform: translateX(-200%)
   }
+
+  .DiscardDiv{
+    position: absolute;
+    right: 20vw; /* Position to the right */
+    top: 50%; /* Center vertically relative to the viewport */
+    transform: translateY(-75%);  /*Adjust vertically to center */
+    width: calc(20vh* 0.7);
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  .DiscardText{
+    font-family: 'Jockey One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 130%;
+    text-decoration: underline;
+    display: inline-flex;
+    text-align: center;
+    color: #D8762C;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 auto;
+    height: 0;
+    transform: translateY(-30px);
+    }
   
   
