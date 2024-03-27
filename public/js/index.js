@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (lobbyId === receivedLobbyId) {
             // Update the displayed player count for this lobby
             document.getElementById('playerCount').textContent = `Connected Players: ${count}`;
+            
         }
     });
 
@@ -78,5 +79,19 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.OpposingPlayerText').textContent = "Waiting on Another Player";
         }
     });
+
+    socket.on('showStartPopup', function() {
+        // Display the start popup when the event is received
+        console.log('ShowStartPopup trigger');
+        document.querySelector('.StartPopup').style.display = 'inline-flex';
+      });
+    
+      // Handle the start button click event
+      document.querySelector('.Startbutton').addEventListener('click', function() {
+        // Hide the popup and possibly notify the server to start the game
+        document.querySelector('.StartPopup').style.display = 'none';
+        socket.emit('startGame', { lobbyId: lobbyId }); // You might want to implement this event on the server
+      });
+    
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

@@ -359,6 +359,10 @@ let lobbiesInfo = {};
 
       // Emit the updated count to the lobby
       io.to(lobbyId).emit('updatePlayerCount', { count: lobbyCounts[lobbyId], lobbyId: lobbyId });
+
+      if (lobbyCounts[lobbyId] === 2) {
+        io.to(lobbyId).emit('showStartPopup');
+      }
       
       socket.on('requestDealCard', () => {
         const lobbyId = socket.lobbyId; // Make sure this is correctly assigned when a socket joins a lobby
