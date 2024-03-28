@@ -778,3 +778,29 @@ table tr:first-child th:last-child{
         transform: translate(-50%, -75%);
         top: 50%;
     }
+
+    .SubmitHand{
+        display: flex;
+        width: fit-content;
+        height: 7.3vh;
+        border-radius: 35px;
+        background-color: #D8762C;
+        border: 5px solid #fff;
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        color: #fff;
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .UnderDiscardDIv{
+        position: absolute;
+        right: 20vw; /* Position to the right */
+        top: 60%;
+        transform: translateX(25%)
+    }
