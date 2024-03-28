@@ -804,3 +804,14 @@ table tr:first-child th:last-child{
         top: 60%;
         transform: translateX(25%)
     }
+
+    .card.selected {
+        border: 3px solid green; /* Add a green border to selected cards */
+        position: relative; /* Adjust positioning */
+        bottom: 0; /* Align selected cards at the bottom */
+    }
+    
+    /* Hand Card Selection */
+    .hand .card.selected {
+        bottom: 0px !important; /* Adjust positioning for selected cards */
+    }

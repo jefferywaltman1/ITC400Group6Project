@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const socket = io(); // This should be at the top level, ensuring 'socket' is accessible
     const urlParams = new URLSearchParams(window.location.search);
     const lobbyId = urlParams.get('lobbyId');
+    const selectedCards = [];
 
     // Ensure we only try to join a lobby if we're actually in a GameRoom with a lobbyId
     if (lobbyId) {
@@ -51,8 +52,38 @@ document.addEventListener('DOMContentLoaded', function() {
             clearCardPreview();
         });
 
+        cardDiv.addEventListener('click', function() {
+            toggleCardSelection(cardDiv, data.card); // Pass card image as argument
+        });
+
         hand.appendChild(cardDiv);
     });
+
+    function applySelectedCardStyles() {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            if (selectedCards.includes(card.style.backgroundImage)) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        });
+    }
+        // Function to toggle card selection
+    function toggleCardSelection(cardDiv, cardImage) {
+        if (selectedCards.includes(cardImage)) {
+            // Deselect card
+            const index = selectedCards.indexOf(cardImage);
+            selectedCards.splice(index, 1);
+            cardDiv.classList.remove('selected');
+        } else {
+            // Select card
+            selectedCards.push(cardImage);
+            cardDiv.classList.add('selected');
+        }
+        console.log(`Player selected ${selectedCards.length} card(s) out of 4.`);
+    }
+
     // Function to display the card preview
     function showCardPreview(cardImage) {
         const previewArea = document.querySelector('.CardPreviewArea');
