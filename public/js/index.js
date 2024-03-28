@@ -70,19 +70,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
         // Function to toggle card selection
-    function toggleCardSelection(cardDiv, cardImage) {
-        if (selectedCards.includes(cardImage)) {
-            // Deselect card
-            const index = selectedCards.indexOf(cardImage);
-            selectedCards.splice(index, 1);
-            cardDiv.classList.remove('selected');
-        } else {
-            // Select card
-            selectedCards.push(cardImage);
-            cardDiv.classList.add('selected');
+        function toggleCardSelection(cardDiv, cardImage) {
+            if (selectedCards.includes(cardImage)) {
+                // Deselect card
+                const index = selectedCards.indexOf(cardImage);
+                selectedCards.splice(index, 1);
+                cardDiv.classList.remove('selected');
+            } else {
+                if (selectedCards.length < 4) { // Check if less than 4 cards are selected
+                    // Select card
+                    selectedCards.push(cardImage);
+                    cardDiv.classList.add('selected');
+                } else {
+                    console.log("You can only select a maximum of 4 cards.");
+                    return; // Exit function if maximum cards are already selected
+                }
+            }
+            console.log(`Player selected ${selectedCards.length} card(s) out of 4.`);
         }
-        console.log(`Player selected ${selectedCards.length} card(s) out of 4.`);
-    }
 
     // Function to display the card preview
     function showCardPreview(cardImage) {

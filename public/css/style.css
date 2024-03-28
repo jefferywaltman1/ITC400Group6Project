@@ -813,5 +813,21 @@ table tr:first-child th:last-child{
     
     /* Hand Card Selection */
     .hand .card.selected {
-        bottom: 0px !important; /* Adjust positioning for selected cards */
+        transform: translateY(0%); /* Adjust positioning for selected cards */
+    }
+
+    .PickFourText{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        text-decoration: underline;
+        position: fixed;
+        text-align: center;
+        color: #D8762C;
+        cursor: pointer;
+        Bottom: 20vh;
+        right: 50vw;
+        transform: translateX(50%);
     }
