@@ -804,7 +804,8 @@ table tr:first-child th:last-child{
     }
 
     .card.selected {
-        border: 3px solid green; /* Add a green border to selected cards */
+        border: 3px solid green;
+        background-color: green; /* Add a green border to selected cards */
         position: relative; /* Adjust positioning */
         bottom: 0; /* Align selected cards at the bottom */
     }

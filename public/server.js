@@ -121,6 +121,10 @@ app.get('/CreateALobby', auth, (req, res) => {
   res.render('CreateALobby', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
 });
 
+//handle lobby searching
+app.get('search-lobby')
+
+
 app.get('/GameRoom', auth, (req, res) => {
   // Extract lobbyId from query parameters
   const lobbyId = req.query.lobbyId;

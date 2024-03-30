@@ -30,8 +30,8 @@
     </div>
     <!-- body -->
     <div class="LobbyRoomHead">
-        <form Class="SearchForForm">
-            <input class="SearchForLobby" type="Text" id="SearchLobby" name="SearchLobby" value="" placeholder="Search for a lobby...">
+        <form Class="SearchForForm" action = "/search-lobby" method ="get">
+            <input class="SearchForLobby" type="Text" id="SearchLobby" name="SearchLobbyQuery" value="" placeholder="Search for a lobby...">
             <input type="submit" value="SUBMIT" class="searchSubmit ">
         </form>
         <input type="submit" id="CreateALobby" value="CREATE A GAME" class="CreateALobby">
