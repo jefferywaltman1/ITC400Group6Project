@@ -309,6 +309,25 @@ app.get('/Lobby', auth, (req, res) => {
   });
 });
 
+
+//search lobbies
+app.get('/search-lobby', (req, res) => {
+  const searchQuery = req.query.SearchLobbyq;
+  const sqlSelect = `SELECT * FROM lobbies WHERE lobbyName LIKE '%${searchQuery}%' AND playercount < 2`;
+
+  db.all(sqlSelect, [], (err, rows) => {
+      if (err) {
+          res.status(500).send('Error accessing the database.');
+      } else {
+          res.render('Lobby', {
+              loggedIn: req.session.userId ? true : false,
+              username: req.session.username || '',
+              lobbies: rows // Pass the filtered lobby data to the template
+          });
+      }
+  });
+});
+
 app.post('/join-lobby/:id', (req, res) => {
   const lobbyId = req.params.id;
   const maxPlayers = 2; // Define the maximum number of players allowed

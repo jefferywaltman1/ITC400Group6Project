@@ -136,3 +136,15 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update the UI accordingly
     });
   });
+
+  document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const searchQuery = document.getElementById('searchQuery').value;
+
+    fetch(`/search-lobby?q=${searchQuery}`)
+    .then(response => response.text())
+    .then(data => {
+        document.querySelector('.LobbyBackdrop').innerHTML = data; // Update lobby list
+    })
+    .catch(error => console.error('Error:', error));
+});
