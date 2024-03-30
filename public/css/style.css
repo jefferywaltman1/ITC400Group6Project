@@ -649,11 +649,13 @@ table tr:first-child th:last-child{
     top: 0;
     left: 50%; /* Center the element from the left side of the viewport */
     transform: translateX(-50%); /* Shift it back by half of its own width */
-    width: 25vw;
+    width: fit-content;
     height: 7vh;
     background-color: #2D2D2D;
     border-bottom-left-radius: 25px;
     border-bottom-right-radius: 25px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
 
 .OpposingPlayerText{
@@ -701,11 +703,13 @@ table tr:first-child th:last-child{
   
 /* Discard Pile Container */
 .discard-pile {
-    width: calc(20vh * 0.7); /* Width of the discard card */
-    height: 20vh; /* Height of the discard card */
+    width: calc(20vh* 0.7);
+    height: 20vh;
     display: flex;
-    justify-content: center; /* Center the card horizontally */
-    align-items: center; /* Center the card vertically */
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
   
   /* Discard Card */
@@ -718,10 +722,6 @@ table tr:first-child th:last-child{
   }
 
   .DiscardDiv{
-    position: absolute;
-    right: 20vw; /* Position to the right */
-    top: 50%; /* Center vertically relative to the viewport */
-    transform: translateY(-75%);  /*Adjust vertically to center */
     width: calc(20vh* 0.7);
     display: inline-flex;
     flex-direction: column;
@@ -737,12 +737,12 @@ table tr:first-child th:last-child{
     display: inline-flex;
     text-align: center;
     color: #D8762C;
-    align-items: center;
     cursor: pointer;
     margin: 0 auto;
     height: 0;
-    transform: translateY(-30px);
-    }
+    align-items: center;
+    transform: translateY(-20px);
+}
 
     .Startbutton{
         display: flex;
@@ -800,10 +800,7 @@ table tr:first-child th:last-child{
     }
 
     .UnderDiscardDIv{
-        position: absolute;
-        right: 20vw; /* Position to the right */
-        top: 60%;
-        transform: translateX(25%)
+        height: 0;
     }
 
     .card.selected {
@@ -831,4 +828,17 @@ table tr:first-child th:last-child{
         Bottom: 20vh;
         right: 50vw;
         transform: translateX(50%);
+    }
+
+    .InteractionColumn{
+        position: fixed;
+        right: 10vw;
+        width: fit-content;
+        max-width: 20vw;
+        display: inline-flex;
+        height: 100vh;
+        flex-direction: column;
+        top: -5vh;
+        justify-content: center;
+        align-items: center;
     }
