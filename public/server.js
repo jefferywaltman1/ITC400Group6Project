@@ -61,6 +61,15 @@ const db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err)
   console.log('Connected to the SQLite database.');
 });
 
+//middleware authentication
+function auth(req, res, next) {
+  if (req.session.userId){
+    next();
+  } else {
+    res.redirect('/login');
+  }
+}
+
 // Navigation routes
 // Each renders a page and passes session data for dynamic content based on login status
 app.get('/login', (req, res) => {
@@ -89,7 +98,7 @@ app.get('/Gallery', (req, res) => {
   res.render('Gallery', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
 });
 
-app.get('/Lobby', (req, res) => {
+app.get('/Lobby', auth, (req, res) => {
   const sqlSelect = `SELECT * FROM lobbies WHERE playerCount < 2`; // Adjust this query as needed
   
   // Fetch lobby data from the database
@@ -108,11 +117,11 @@ app.get('/Lobby', (req, res) => {
   });
 });
 
-app.get('/CreateALobby', (req, res) => {
+app.get('/CreateALobby', auth, (req, res) => {
   res.render('CreateALobby', { loggedIn: req.session.userId ? true : false, username: req.session.username || '' });
 });
 
-app.get('/GameRoom', (req, res) => {
+app.get('/GameRoom', auth, (req, res) => {
   // Extract lobbyId from query parameters
   const lobbyId = req.query.lobbyId;
 
@@ -279,7 +288,7 @@ app.post('/create-lobby', (req, res) => {
 });
 
 
-app.get('/Lobby', (req, res) => {
+app.get('/Lobby', auth, (req, res) => {
   const sqlSelect = `SELECT * FROM lobbies WHERE playerCount < 2`; // Select lobbies that are not full
   
   db.all(sqlSelect, [], (err, rows) => {
