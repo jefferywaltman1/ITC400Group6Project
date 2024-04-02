@@ -392,6 +392,13 @@ let lobbiesInfo = {};
           player2Wins: 0,
           readyPlayers: []
         };
+        if (lobbiesInfo[lobbyId].users.length === 1) {
+          // This is the second player joining
+          lobbiesInfo[lobbyId].player2 = session.username;
+      } else {
+          // This is the first player joining
+          lobbiesInfo[lobbyId].player1 = session.username;
+      }
       }
       const username = session.username;
       if (!lobbiesInfo[lobbyId].users.includes(username)) { // Corrected to target 'users' array
@@ -477,27 +484,24 @@ let lobbiesInfo = {};
     io.in(lobbyId).emit('updateColor', { color });
   });
 
-      socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
-        if (lobbiesInfo[lobbyId] && lobbiesInfo[lobbyId].users.includes(socket.handshake.session.username)) {
-            // Assuming each user has a unique username
-            const username = socket.handshake.session.username;
-
-            // Initialize selectedCards storage for the lobby if it doesn't exist
-            if (!lobbiesInfo[lobbyId].selectedCards) {
-                lobbiesInfo[lobbyId].selectedCards = {};
-            }
-
-            // Store the submitted cards
-            lobbiesInfo[lobbyId].selectedCards[username] = selectedCards;
-
-            console.log(`Cards submitted by ${username} in lobby ${lobbyId}:`, selectedCards);
-            
-            // Optionally, notify the other player that this player has submitted their cards
-            // This part depends on how you manage user sessions and socket connections
-        } else {
-            console.log(`User ${socket.handshake.session.username} submitted cards for lobby ${lobbyId}, but they are not part of the lobby.`);
+  socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
+    const username = socket.handshake.session.username;
+    if (selectedCards.length === 4) {
+        // Save selected cards to the player's game field
+        const playerKey = lobbiesInfo[lobbyId].player1 === username ? 'player1GameField' : 'player2GameField';
+        if (!lobbiesInfo[lobbyId][playerKey]) {
+            lobbiesInfo[lobbyId][playerKey] = [];
         }
-    });
+        lobbiesInfo[lobbyId][playerKey] = selectedCards;
+
+        // Notify other player
+        socket.to(lobbyId).emit('updateGameField', { player: playerKey, cards: selectedCards });
+        io.in(lobbyId).emit('updateGameField', { player: username, cards: selectedCards });
+    } else {
+        // Handle error: not enough cards selected
+        socket.emit('error', { message: 'You must select exactly 4 cards.' });
+    }
+});
 });
 
 function updatePlayerCountInDb(lobbyId) {

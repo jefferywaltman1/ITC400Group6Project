@@ -137,17 +137,36 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.querySelector('.SubmitHand').addEventListener('click', function() {
-        // Ensure 'selectedCards' contains the paths to the selected card images
-        if (selectedCards.length > 0) {
-            // Emit the submitSelectedCards event to the server with the selected cards
+        if (selectedCards.length === 4) {
             socket.emit('submitSelectedCards', { lobbyId: lobbyId, selectedCards: selectedCards });
-            console.log('Submitted selected cards:', selectedCards);
         } else {
-            console.log('No cards selected.');
+            alert('You must select 4 cards.');
         }
     });
-    
-    
+
+    socket.on('updateGameField', ({ player, cards }) => {
+        // Assuming you have a way to distinguish if the current user is the one who submitted
+        if (currentUserUsername !== player) {
+            // This means the opponent submitted their cards
+            // Update the UI to reflect these changes, such as removing grayscale
+            document.querySelectorAll('.opponent').forEach((card, index) => {
+                if (index < cards.length) {
+                    card.style.filter = 'none'; // Remove grayscale
+                }
+            });
+        }
+        // Remove the submitted cards from the player's hand
+        if (currentUserUsername === player) {
+            selectedCards.forEach(card => {
+                document.querySelector(`[data-card='${card}']`).remove(); // You'll need to adjust how you identify cards
+            });
+            selectedCards = []; // Reset the selected cards
+        }
+    });
+
+    socket.on('submissionError', (message) => {
+        alert(message); // Display error message to the user
+    });    
     
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });
