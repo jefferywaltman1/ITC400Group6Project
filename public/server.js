@@ -313,7 +313,21 @@ app.get('/Lobby', auth, (req, res) => {
 //search lobbies
 app.get('/search-lobby', (req, res) => {
   const searchQuery = req.query.SearchLobbyq;
-  const sqlSelect = `SELECT * FROM lobbies WHERE lobbyName LIKE '%${searchQuery}%' AND playercount < 2`;
+  const sqlSelect = `SELECT * 
+  FROM (
+      -- Results of the fuzzy search
+      SELECT *, 1 AS order_rank
+      FROM lobbies 
+      WHERE lobbyName LIKE '%${searchQuery}%' AND playercount < 2
+      
+      UNION ALL
+      
+      -- Results other than the fuzzy search
+      SELECT *, 2 AS order_rank
+      FROM lobbies 
+      WHERE lobbyName NOT LIKE '%${searchQuery}%' AND playercount < 2
+  ) AS combined_results
+  ORDER BY order_rank, playercount;`;
 
   db.all(sqlSelect, [], (err, rows) => {
       if (err) {
