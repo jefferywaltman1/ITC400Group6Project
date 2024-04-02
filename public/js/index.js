@@ -128,6 +128,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.StartPopup').style.display = 'none';
         socket.emit('startGame', { lobbyId: lobbyId }); // You might want to implement this event on the server
       });
+
+      socket.on('startPickingPhase', function() {
+        document.querySelector('.PickFourText').style.display = 'block'; // Assuming default is 'none'
+        document.querySelector('.SubmitHand').style.display = 'flex'; // Assuming default is 'none'
+    });
+    
     
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

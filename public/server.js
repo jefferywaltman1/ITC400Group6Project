@@ -428,6 +428,8 @@ let lobbiesInfo = {};
       // Notify players that the game has started
       io.to(lobbyId).emit('gameStarted');
     }
+
+    io.to(lobbyId).emit('startPickingPhase');
   });
 
   socket.on('disconnect', () => {

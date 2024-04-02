@@ -781,7 +781,7 @@ table tr:first-child th:last-child{
     }
 
     .SubmitHand{
-        display: flex;
+        display: none;
         width: fit-content;
         height: 7.3vh;
         border-radius: 35px;
@@ -816,6 +816,7 @@ table tr:first-child th:last-child{
     }
 
     .PickFourText{
+        Display: none;
         font-family: 'Jockey One';
         font-style: normal;
         font-weight: 400;
