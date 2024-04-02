@@ -71,23 +71,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
         // Function to toggle card selection
         function toggleCardSelection(cardDiv, cardImage) {
-            if (selectedCards.includes(cardImage)) {
+            // The backgroundImage includes `url("...")` wrapper, we need to extract the URL.
+            const backgroundImageUrl = cardDiv.style.backgroundImage.slice(5, -2);
+        
+            if (selectedCards.includes(backgroundImageUrl)) {
                 // Deselect card
-                const index = selectedCards.indexOf(cardImage);
+                const index = selectedCards.indexOf(backgroundImageUrl);
                 selectedCards.splice(index, 1);
                 cardDiv.classList.remove('selected');
             } else {
-                if (selectedCards.length < 4) { // Check if less than 4 cards are selected
-                    // Select card
-                    selectedCards.push(cardImage);
+                // Select card
+                if (selectedCards.length < 4) {
+                    selectedCards.push(backgroundImageUrl);
                     cardDiv.classList.add('selected');
                 } else {
                     console.log("You can only select a maximum of 4 cards.");
-                    return; // Exit function if maximum cards are already selected
                 }
             }
             console.log(`Player selected ${selectedCards.length} card(s) out of 4.`);
-        }
+        }        
 
     // Function to display the card preview
     function showCardPreview(cardImage) {
@@ -133,6 +135,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.PickFourText').style.display = 'block'; // Assuming default is 'none'
         document.querySelector('.SubmitHand').style.display = 'flex'; // Assuming default is 'none'
     });
+
+    document.querySelector('.SubmitHand').addEventListener('click', function() {
+        // Ensure 'selectedCards' contains the paths to the selected card images
+        if (selectedCards.length > 0) {
+            // Emit the submitSelectedCards event to the server with the selected cards
+            socket.emit('submitSelectedCards', { lobbyId: lobbyId, selectedCards: selectedCards });
+            console.log('Submitted selected cards:', selectedCards);
+        } else {
+            console.log('No cards selected.');
+        }
+    });
+    
     
     
     // Assuming the 'socket' variable is your connected Socket.IO client instance

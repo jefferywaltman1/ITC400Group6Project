@@ -476,6 +476,28 @@ let lobbiesInfo = {};
     // Broadcast to all in the room, including the sender
     io.in(lobbyId).emit('updateColor', { color });
   });
+
+      socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
+        if (lobbiesInfo[lobbyId] && lobbiesInfo[lobbyId].users.includes(socket.handshake.session.username)) {
+            // Assuming each user has a unique username
+            const username = socket.handshake.session.username;
+
+            // Initialize selectedCards storage for the lobby if it doesn't exist
+            if (!lobbiesInfo[lobbyId].selectedCards) {
+                lobbiesInfo[lobbyId].selectedCards = {};
+            }
+
+            // Store the submitted cards
+            lobbiesInfo[lobbyId].selectedCards[username] = selectedCards;
+
+            console.log(`Cards submitted by ${username} in lobby ${lobbyId}:`, selectedCards);
+            
+            // Optionally, notify the other player that this player has submitted their cards
+            // This part depends on how you manage user sessions and socket connections
+        } else {
+            console.log(`User ${socket.handshake.session.username} submitted cards for lobby ${lobbyId}, but they are not part of the lobby.`);
+        }
+    });
 });
 
 function updatePlayerCountInDb(lobbyId) {
