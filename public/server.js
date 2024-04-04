@@ -484,23 +484,42 @@ let lobbiesInfo = {};
     io.in(lobbyId).emit('updateColor', { color });
   });
 
-  socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
+socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
     const username = socket.handshake.session.username;
-    if (selectedCards.length === 4) {
-        // Save selected cards to the player's game field
-        const playerKey = lobbiesInfo[lobbyId].player1 === username ? 'player1GameField' : 'player2GameField';
-        if (!lobbiesInfo[lobbyId][playerKey]) {
-            lobbiesInfo[lobbyId][playerKey] = [];
-        }
-        lobbiesInfo[lobbyId][playerKey] = selectedCards;
 
-        // Notify other player
-        socket.to(lobbyId).emit('updateGameField', { player: playerKey, cards: selectedCards });
-        io.in(lobbyId).emit('updateGameField', { player: username, cards: selectedCards });
+    if (selectedCards.length === 4) {
+        if (!lobbiesInfo[lobbyId]) {
+            lobbiesInfo[lobbyId] = { submittedCards: {}, player1: null, player2: null };
+        }
+
+        if (!lobbiesInfo[lobbyId].submittedCards) {
+            lobbiesInfo[lobbyId].submittedCards = {};
+        }
+
+        // Determine the player's key based on username
+        const playerKey = lobbiesInfo[lobbyId].player1 === username ? 'player1' : 'player2';
+
+        // Store the submitted cards for the user
+        lobbiesInfo[lobbyId].submittedCards[username] = selectedCards;
+
+        console.log(`User ${username} submitted cards in lobby ${lobbyId}:`, selectedCards);
+
+        // Notify the opponent immediately that this player has submitted their cards
+        const opponentUsername = Object.keys(lobbiesInfo[lobbyId].users).find(u => u !== username);
+        if (opponentUsername) {
+            io.in(lobbyId).emit('updateGameField', {
+                player: username, // Emitting 'username' indicates who the submission is from
+                cards: selectedCards // This could be replaced with a placeholder if actual cards should not be revealed
+            });
+        }
     } else {
-        // Handle error: not enough cards selected
         socket.emit('error', { message: 'You must select exactly 4 cards.' });
     }
+
+    io.in(lobbyId).emit('displaySubmittedCards', {
+      username: username,
+      cards: lobbiesInfo[lobbyId].submittedCards[username]
+    });
 });
 });
 

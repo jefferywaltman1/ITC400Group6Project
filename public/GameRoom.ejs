@@ -30,7 +30,10 @@
       <% } %>
       <!-- Player's Cards -->
       <% for(let i = 0; i < 4; i++) { %>
-        <div class="card" style="background-image: url('/images/Cardback.png');"></div>
+        <div class="card-slot">
+          <div class="card" style="background-image: url('/images/Cardback.png');"></div>
+          <!-- The .fieldCard will be dynamically added here -->
+        </div>
       <% } %>
     </div>
 

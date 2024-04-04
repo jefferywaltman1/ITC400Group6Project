@@ -157,16 +157,75 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // Remove the submitted cards from the player's hand
         if (currentUserUsername === player) {
-            selectedCards.forEach(card => {
-                document.querySelector(`[data-card='${card}']`).remove(); // You'll need to adjust how you identify cards
+            // Hide the "Select 4 Cards" and "Submit Hand" UI elements.
+            document.querySelector('.PickFourText').style.display = 'none';
+            document.querySelector('.SubmitHand').style.display = 'none';
+            document.querySelector('.hand').style.display = 'none'; // Hide the player's hand.
+    
+            // Find all selected cards and remove them.
+            document.querySelectorAll('.card.selected').forEach(card => {
+                card.remove(); // Remove the card element from the DOM.
             });
-            selectedCards = []; // Reset the selected cards
+            selectedCards = []; // Reset the selectedCards array.
         }
     });
 
     socket.on('submissionError', (message) => {
         alert(message); // Display error message to the user
-    });    
+    });
     
+    socket.on('displaySubmittedCards', ({ username, cards }) => {
+        // Only act if the current user is the one who submitted the cards
+        if (currentUserUsername === username) {
+            // Find the container where to append the cards (assuming the first 4 card slots are for the player)
+            const cardSlots = document.querySelectorAll('.game-field .card-slot'); // Ensure your HTML has these containers
+    
+            // Iterate over each submitted card path and each card slot
+            cards.forEach((cardPath, index) => {
+                if (cardSlots[index]) { // Check if the card slot exists
+                    const overlayCard = document.createElement('div');
+                    overlayCard.className = 'fieldCard';
+    
+                    const cardInner = document.createElement('div');
+                    cardInner.className = 'fieldCard-inner';
+    
+                    const cardFront = document.createElement('div');
+                    cardFront.className = 'fieldCard-front';
+                    cardFront.style.backgroundImage = `url(${cardPath})`;
+    
+                    const cardBack = document.createElement('div');
+                    cardBack.className = 'fieldCard-back';
+                    cardBack.style.backgroundImage = "url('/images/Cardback.png')";
+    
+                    cardInner.appendChild(cardFront);
+                    cardInner.appendChild(cardBack);
+                    overlayCard.appendChild(cardInner);
+    
+                    // Clear previous cards if needed
+                    while (cardSlots[index].firstChild) {
+                        cardSlots[index].removeChild(cardSlots[index].firstChild);
+                    }
+    
+                    // Append the overlayCard to the specific card slot
+                    cardSlots[index].appendChild(overlayCard);
+                }
+            });
+        }
+    });
+
+    // Dynamically added field cards event delegation for showing card previews
+    document.addEventListener('mouseenter', function(e) {
+        if (e.target.classList.contains('fieldCard-front')) {
+            // Assuming e.target.style.backgroundImage has the card image URL
+            showCardPreview(e.target.style.backgroundImage.slice(5, -2)); // Remove `url("")` wrapper
+        }
+    }, true); // Use capture phase to ensure the event is captured before it bubbles down
+
+    document.addEventListener('mouseleave', function(e) {
+        if (e.target.classList.contains('fieldCard-front')) {
+            clearCardPreview();
+        }
+    }, true);
+             
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });
