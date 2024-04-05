@@ -862,9 +862,13 @@ table tr:first-child th:last-child{
         position: relative; /* Ensures the inner content is positioned correctly within the container */
       }
       
-      .fieldCard:hover .fieldCard-inner {
+      .fieldCard:not(.selected):hover .fieldCard-inner {
         transform: rotateY(0deg);
-      }
+    }
+    
+    .fieldCard.selected .fieldCard-inner {
+        transform: rotateY(0deg); /* Ensures selected card stays face up */
+    }
       
       .fieldCard-front, .fieldCard-back {
         position: absolute;
@@ -878,3 +882,54 @@ table tr:first-child th:last-child{
       .fieldCard-back {
         transform: rotateY(180deg); /* Flips the back face around so it faces out when rotated */
       }
+
+      .NoticeText{
+            Display: none;
+            font-family: 'Jockey One';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 2.2rem;
+            line-height: 130%;
+            text-decoration: underline;
+            position: fixed;
+            text-align: center;
+            color: #D8762C;
+            cursor: pointer;
+            Bottom: 20vh;
+            right: 50vw;
+            transform: translateX(50%);
+      }
+
+      .SubmitFlip{
+        display: none;
+        width: fit-content;
+        height: 7.3vh;
+        border-radius: 35px;
+        background-color: #D8762C;
+        border: 5px solid #fff;
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        color: #fff;
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .fieldCard.selected {
+        border: 3px solid green; /* Highlight selected card */
+    }
+
+    .flippedCard {
+        width: calc(20vh * 0.7);
+        height: 20vh;
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+    
+    /* Adjust hover effect to only flip cards that aren't already selected */

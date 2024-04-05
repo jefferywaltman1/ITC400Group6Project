@@ -387,10 +387,11 @@ let lobbiesInfo = {};
       }
       if (!lobbiesInfo[lobbyId]) {
         lobbiesInfo[lobbyId] = {
-          users: [],
-          player1Wins: 0,
-          player2Wins: 0,
-          readyPlayers: []
+            users: [],
+            player1Wins: 0,
+            player2Wins: 0,
+            readyPlayers: [],
+            flippedCardsThisRound: [] // New array to track flipped cards this round
         };
         if (lobbiesInfo[lobbyId].users.length === 1) {
           // This is the second player joining
@@ -520,6 +521,32 @@ socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
       username: username,
       cards: lobbiesInfo[lobbyId].submittedCards[username]
     });
+
+    if (Object.keys(lobbiesInfo[lobbyId].submittedCards).length === 2) { // Assuming 2 players per lobby
+      io.in(lobbyId).emit('bothPlayersSubmitted');
+  }
+});
+
+socket.on('flipCard', ({ lobbyId, cardImage }) => {
+  const username = socket.handshake.session.username;
+
+  if (lobbiesInfo[lobbyId] && username) {
+      if (!lobbiesInfo[lobbyId].flippedCardsThisRound.includes(username)) {
+          lobbiesInfo[lobbyId].flippedCardsThisRound.push(username);
+      }
+
+      // Broadcast the flipped card info
+      io.in(lobbyId).emit('cardFlipped', { username, cardImage });
+
+      // Check if both players have flipped a card
+      if (lobbiesInfo[lobbyId].flippedCardsThisRound.length >= 2) {
+          // Reset for the next round
+          lobbiesInfo[lobbyId].flippedCardsThisRound = [];
+
+          // Emit an event to re-enable selection
+          io.in(lobbyId).emit('enableSelection');
+      }
+  }
 });
 });
 

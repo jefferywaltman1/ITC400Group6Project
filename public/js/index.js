@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const lobbyId = urlParams.get('lobbyId');
     const selectedCards = [];
+    const submitFlipBtn = document.querySelector('.SubmitFlip');
+    const noticeText = document.getElementById('NoticeText');
+    let selectionEnabled = true;
+    document.getElementById('WaitFlipText').style.display = 'none';
+
 
     // Ensure we only try to join a lobby if we're actually in a GameRoom with a lobbyId
     if (lobbyId) {
@@ -226,6 +231,81 @@ document.addEventListener('DOMContentLoaded', function() {
             clearCardPreview();
         }
     }, true);
+
+    socket.on('bothPlayersSubmitted', function() {
+        // Show SubmitFlip button and NoticeText when both players have submitted
+        noticeText.style.display = 'block';
+        document.querySelectorAll('.fieldCard').forEach(card => {
+            card.addEventListener('click', selectToFlip);
+        });
+
+        bothPlayersSubmitted;
+    });
+
+    function selectToFlip(event) {
+        if (!selectionEnabled) {
+            console.log("Selection is disabled.");
+            return; // Exit the function if selection is disabled
+        }
+        // Deselect any previously selected cards
+        const previouslySelected = document.querySelector('.fieldCard.selected');
+        if (previouslySelected) {
+            previouslySelected.classList.remove('selected');
+        }
+    
+        // Select the current card
+        const selectedCard = event.currentTarget;
+        selectedCard.classList.add('selected');
+        
+        // Find the front of the card to get the image URL
+        const cardFront = selectedCard.querySelector('.fieldCard-front');
+        if (cardFront) {
+            const cardImageURL = cardFront.style.backgroundImage.slice(5, -2); // Extract URL
+            
+            // Set up the Flip Card button action
+            submitFlipBtn.onclick = () => flipCard(cardImageURL);
+            submitFlipBtn.style.display = 'block';
+        }
+    }  
+
+    function flipCard(cardImageURL) {
+        socket.emit('flipCard', { lobbyId, cardImage: cardImageURL });
+        submitFlipBtn.style.display = 'none'; // Optionally hide the button again
+        selectionEnabled = false; // Disable further card selection
+    
+        // Hide "Pick A Card To Flip" and show "Waiting For Opponent..."
+        document.getElementById('NoticeText').style.display = 'none';
+        document.getElementById('WaitFlipText').style.display = 'block';
+    }
+
+    socket.on('cardFlipped', ({ username, cardImage }) => {
+        const selectedCard = document.querySelector('.fieldCard.selected');
+        if (username !== currentUserUsername){
+        }    else {
+        if (selectedCard) {
+        const flippedCardDiv = document.createElement('div');
+        flippedCardDiv.className = 'flippedCard';
+        flippedCardDiv.style.backgroundImage = `url(${cardImage})`;
+
+        // If there's a specific container or positioning element around .fieldCard, ensure .flippedCard is inserted correctly within that structure
+        const cardSlot = selectedCard.closest('.card-slot');
+        if (cardSlot) {
+            cardSlot.insertBefore(flippedCardDiv, selectedCard.nextSibling);
+            selectedCard.remove(); // Remove or hide the original card
+        }
+
+        // Optionally, you can adjust styles or classes of the cardSlot to reflect the flipped state
+        }}
+    });
+    
+    socket.on('enableSelection', function() {
+        // Re-enable card selection
+        selectionEnabled = true;
+        
+        // Switch back to showing "Pick A Card To Flip" for the next action
+        document.getElementById('NoticeText').style.display = 'block';
+        document.getElementById('WaitFlipText').style.display = 'none';
+    });
              
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });
