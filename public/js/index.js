@@ -256,6 +256,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Select the current card
         const selectedCard = event.currentTarget;
         selectedCard.classList.add('selected');
+
+        // Find the position of the card
+        const position = selectedCard.closest('.card-slot').getAttribute('data-position');
         
         // Find the front of the card to get the image URL
         const cardFront = selectedCard.querySelector('.fieldCard-front');
@@ -263,17 +266,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const cardImageURL = cardFront.style.backgroundImage.slice(5, -2); // Extract URL
             
             // Set up the Flip Card button action
-            submitFlipBtn.onclick = () => flipCard(cardImageURL);
+            submitFlipBtn.onclick = () => flipCard(cardImageURL, position);
             submitFlipBtn.style.display = 'block';
         }
     }  
 
-    function flipCard(cardImageURL) {
-        socket.emit('flipCard', { lobbyId, cardImage: cardImageURL });
-        submitFlipBtn.style.display = 'none'; // Optionally hide the button again
-        selectionEnabled = false; // Disable further card selection
+    function flipCard(cardImageURL, position) {
+        socket.emit('flipCard', { lobbyId, cardImage: cardImageURL, position });
+        submitFlipBtn.style.display = 'none'; // Hide the submit button after flipping
+        selectionEnabled = false; // Disable selection after flipping a card
     
-        // Hide "Pick A Card To Flip" and show "Waiting For Opponent..."
+        // Update UI elements to indicate waiting state
         document.getElementById('NoticeText').style.display = 'none';
         document.getElementById('WaitFlipText').style.display = 'block';
     }

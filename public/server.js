@@ -527,8 +527,12 @@ socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
   }
 });
 
-socket.on('flipCard', ({ lobbyId, cardImage }) => {
+socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
   const username = socket.handshake.session.username;
+
+  if (username) {
+    console.log(`${username} flipped a card at position ${position} with image ${cardImage} in lobby ${lobbyId}`);
+  }
 
   if (lobbiesInfo[lobbyId] && username) {
       if (!lobbiesInfo[lobbyId].flippedCardsThisRound.includes(username)) {
