@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedCards = [];
     const submitFlipBtn = document.querySelector('.SubmitFlip');
     const noticeText = document.getElementById('NoticeText');
+    const gameField = document.querySelector('.game-field');
     let selectionEnabled = true;
     document.getElementById('WaitFlipText').style.display = 'none';
 
@@ -63,6 +64,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
         hand.appendChild(cardDiv);
     });
+
+    gameField.addEventListener('mouseenter', function(event) {
+        // Check if the event target (or any of its parents) has the class 'card' or 'flippedCard'
+        let target = event.target;
+        while (target && !target.classList.contains('card') && !target.classList.contains('flippedCard')) {
+            target = target.parentElement;
+        }
+
+        // If a card was the source of the event and does not have the card back image, show its preview
+        if (target && (target.classList.contains('card') || target.classList.contains('flippedCard'))) {
+            const cardImageURL = target.style.backgroundImage.slice(5, -2); // Extract URL from `url("...")`
+            
+            // Exclude card back from preview
+            if (cardImageURL !== '/images/Cardback.png') {
+                showCardPreview(cardImageURL);
+            }
+        }
+    }, true);
+
+    gameField.addEventListener('mouseleave', function(event) {
+        // Similar logic to determine if the event originated from a card
+        let target = event.target;
+        while (target && !target.classList.contains('card') && !target.classList.contains('flippedCard')) {
+            target = target.parentElement;
+        }
+
+        // If a card was the source of the event, clear the preview
+        if (target && (target.classList.contains('card') || target.classList.contains('flippedCard'))) {
+            clearCardPreview();
+        }
+    }, true);
 
     function applySelectedCardStyles() {
         const cards = document.querySelectorAll('.card');

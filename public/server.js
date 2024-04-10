@@ -503,8 +503,6 @@ socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
         // Store the submitted cards for the user
         lobbiesInfo[lobbyId].submittedCards[username] = selectedCards;
 
-        console.log(`User ${username} submitted cards in lobby ${lobbyId}:`, selectedCards);
-
         // Notify the opponent immediately that this player has submitted their cards
         const opponentUsername = Object.keys(lobbiesInfo[lobbyId].users).find(u => u !== username);
         if (opponentUsername) {
@@ -529,10 +527,6 @@ socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
 
 socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
   const username = socket.handshake.session.username;
-
-  if (username) {
-    console.log(`${username} flipped a card at position ${position} with image ${cardImage} in lobby ${lobbyId}`);
-  }
 
   const opponentPosition = 3 - position; // Assuming 0-indexed positions and a total of 4 slots
 
