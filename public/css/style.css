@@ -931,5 +931,71 @@ table tr:first-child th:last-child{
         transition: transform 0.6s;
         transform-style: preserve-3d;
     }
+
+    .OpponentScoreText{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        text-decoration: underline;
+        text-align: center;
+        color: #D8762C;
+        align-items: center;
+        cursor: pointer;
+        margin: 0;
+        height: 0;
+        transform: translateY(10vh)
+        }
+
+    .PlayerScoreText{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        text-decoration: underline;
+        text-align: center;
+        color: #D8762C;
+        align-items: center;
+        cursor: pointer;
+        margin-top: 20vh;
+        transform: translateY(20px);
+        }
+    .OpponentScoreValue{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        text-align: center;
+        color: #D8762C;
+        align-items: center;
+        cursor: pointer;
+        margin: 0;
+        height: 0;
+        }
+    .PlayerScoreValue{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        text-align: center;
+        color: #D8762C;
+        align-items: center;
+        cursor: pointer;
+        margin: 0;
+        }
+    .ScoreDiv{
+        margin-top: 10vh;
+        position: absolute;
+        display: inline-flex;
+        width: 10vw;
+        right: 20vw;
+        flex-direction: column;
+        align-content: center;
+        flex-wrap: wrap;
+    }
     
     /* Adjust hover effect to only flip cards that aren't already selected */
