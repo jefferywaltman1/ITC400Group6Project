@@ -309,6 +309,17 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('NoticeText').style.display = 'block';
         document.getElementById('WaitFlipText').style.display = 'none';
     });
+
+    socket.on('opponentCardFlipped', ({ cardImage, position }) => {
+        // Find the opponent's card slot based on the received position
+        const opponentCardSlots = document.querySelectorAll('.opponent');
+        const slotToReplace = opponentCardSlots[position]; // Find the correct slot
+      
+        if (slotToReplace) {
+          // Replace the slot's background image with the flipped card image
+          slotToReplace.style.backgroundImage = `url(${cardImage})`;
+        }
+      });
              
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

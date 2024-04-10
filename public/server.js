@@ -534,6 +534,8 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
     console.log(`${username} flipped a card at position ${position} with image ${cardImage} in lobby ${lobbyId}`);
   }
 
+  const opponentPosition = 3 - position; // Assuming 0-indexed positions and a total of 4 slots
+
   if (lobbiesInfo[lobbyId] && username) {
       if (!lobbiesInfo[lobbyId].flippedCardsThisRound.includes(username)) {
           lobbiesInfo[lobbyId].flippedCardsThisRound.push(username);
@@ -542,10 +544,31 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
       // Broadcast the flipped card info
       io.in(lobbyId).emit('cardFlipped', { username, cardImage });
 
-      // Check if both players have flipped a card
-      if (lobbiesInfo[lobbyId].flippedCardsThisRound.length >= 2) {
-          // Reset for the next round
+      if (lobbiesInfo[lobbyId].flippedCardsThisRound.length === 1) {
+        lobbiesInfo[lobbyId].firstFlipInfo = {
+          username: username,
+          cardImage: cardImage,
+          position: position,
+          socketId: socket.id  // Store the socket ID of the first player
+      };
+        lobbiesInfo[lobbyId].flippedCardsThisRound.push(username);
+      } else if (lobbiesInfo[lobbyId].flippedCardsThisRound.length === 0) {
+        // Just record the username of the player who flipped the card if it's the first flip
+        lobbiesInfo[lobbyId].flippedCardsThisRound.push(username);
+      } else if (lobbiesInfo[lobbyId].flippedCardsThisRound.length >= 2) {
+          const firstPlayerFlip = lobbiesInfo[lobbyId].firstFlipInfo;
+
+          if (firstPlayerFlip.username !== username) {
+            // Send the first player's flip to the second player
+            socket.emit('opponentCardFlipped', firstPlayerFlip);
+      
+            if (lobbiesInfo[lobbyId].firstFlipInfo && lobbiesInfo[lobbyId].firstFlipInfo.socketId) {
+              const firstPlayerSocketId = lobbiesInfo[lobbyId].firstFlipInfo.socketId;
+              io.to(firstPlayerSocketId).emit('opponentCardFlipped', { username, cardImage, position });
+          }
+          }
           lobbiesInfo[lobbyId].flippedCardsThisRound = [];
+          delete lobbiesInfo[lobbyId].firstFlipInfo;
 
           // Emit an event to re-enable selection
           io.in(lobbyId).emit('enableSelection');
