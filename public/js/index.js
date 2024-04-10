@@ -305,6 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function flipCard(cardImageURL, position) {
         socket.emit('flipCard', { lobbyId, cardImage: cardImageURL, position });
+        
         submitFlipBtn.style.display = 'none'; // Hide the submit button after flipping
         selectionEnabled = false; // Disable selection after flipping a card
     

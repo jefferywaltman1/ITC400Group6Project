@@ -9,17 +9,36 @@ const SQLiteStore = require('connect-sqlite3')(session); // For storing session 
 const sqlite3 = require('sqlite3').verbose(); // For database operations
 const crypto = require('crypto');
 const sharedsession = require("express-socket.io-session");
+const fs = require('fs');
+const csv = require('csv-parser');
+const cardMetadata = {}
+
+fs.createReadStream('public/DLCardMetadata.csv')
+  .pipe(csv())
+  .on('data', (row) => {
+    const key = row['Internal ID (String)'].match(/\d+/)[0]; // Extracts number from string like '/images/23_dl.png'
+    cardMetadata[key] = {
+      Type: row['Type (String)'],
+      Faction: row['Faction (String)'],
+      Ability: row['Ability (Boolean)'] == 1, // Note the use of double equals
+      Might: row['Might (Boolean)'] == 1,
+      Mind: row['Mind (Boolean)'] == 1,
+      Value: parseInt(row['Value (Int)'], 10),
+      Priority: parseInt(row['Priority (int)'], 10),
+    };
+  })
+  .on('end', () => {
+    console.log('CSV file successfully processed');
+    //console.log(cardMetadata);
+    const PORT = process.env.PORT || 3000;
+    server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  });
 
 
 // Setting EJS as the template engine and specifying the views directory
 app.set('view engine', 'ejs');
 const path = require('path');
 app.set('views', path.join(__dirname));
-
-// Server port configuration
-const PORT = process.env.PORT || 3000;
-
-// Serving static files from the 'public' directory
 
 // Default route for the landing page, showing different content based on login status
 app.get('/', (req, res) => {
@@ -391,15 +410,20 @@ let lobbiesInfo = {};
             player1Wins: 0,
             player2Wins: 0,
             readyPlayers: [],
-            flippedCardsThisRound: [] // New array to track flipped cards this round
+            flippedCardsThisRound: [],
+            PlayedCards: {
+              player1: [
+                  { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 },
+                  { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 },
+                  { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 }
+              ],
+              player2: [
+                  { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 },
+                  { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 },
+                  { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 }
+              ]
+            }
         };
-        if (lobbiesInfo[lobbyId].users.length === 1) {
-          // This is the second player joining
-          lobbiesInfo[lobbyId].player2 = session.username;
-      } else {
-          // This is the first player joining
-          lobbiesInfo[lobbyId].player1 = session.username;
-      }
       }
       const username = session.username;
       if (!lobbiesInfo[lobbyId].users.includes(username)) { // Corrected to target 'users' array
@@ -432,6 +456,17 @@ let lobbiesInfo = {};
 
   socket.on('startGame', ({ lobbyId }) => {
     const username = socket.handshake.session.username;
+
+    if (!lobbiesInfo[lobbyId].player1) {
+      // This is the first player starting the game
+      lobbiesInfo[lobbyId].player1 = username;
+      console.log('Player 1 set to', lobbiesInfo[lobbyId].player1);
+  } else if (!lobbiesInfo[lobbyId].player2 && lobbiesInfo[lobbyId].player1 !== username) {
+      // This is the second distinct player starting the game
+      lobbiesInfo[lobbyId].player2 = username;
+      console.log('Player 2 set to', lobbiesInfo[lobbyId].player2);
+  }
+
     if (!lobbiesInfo[lobbyId].readyPlayers.includes(username)) {
       lobbiesInfo[lobbyId].readyPlayers.push(username);
     }
@@ -527,8 +562,43 @@ socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
 
 socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
   const username = socket.handshake.session.username;
+  let playerRole = username === lobbiesInfo[lobbyId].player1 ? 'player1' : 'player2';
+  const cardId = cardImage.split('/')[2].split('_')[0];;
+  const cardData = cardMetadata[cardId];
+
+  if (username === lobbiesInfo[lobbyId].player1) {
+    playerRole = 'player1';
+  } else if (username === lobbiesInfo[lobbyId].player2) {
+    playerRole = 'player2';
+  }
 
   const opponentPosition = 3 - position; // Assuming 0-indexed positions and a total of 4 slots
+
+  if (playerRole) {
+    // Assuming you want to update the first available slot for the player
+    const playedCards = lobbiesInfo[lobbyId].PlayedCards[playerRole];
+    const firstAvailableSlot = playedCards.find(card => !card.InternalID);
+
+    if (firstAvailableSlot) {
+      firstAvailableSlot.InternalID = cardImage;
+      firstAvailableSlot.Type = cardData.Type;
+      firstAvailableSlot.Faction = cardData.Faction;
+      firstAvailableSlot.Ability = cardData.Ability == 1;
+      firstAvailableSlot.Might = cardData.Might == 1;
+      firstAvailableSlot.Mind = cardData.Mind == 1;
+      firstAvailableSlot.Value = parseInt(cardData.Value, 10);
+      firstAvailableSlot.Priority = parseInt(cardData.Priority, 10); // Update with the card image as the InternalID
+    } else {
+      console.log(`No available slot to assign the flipped card for ${username}.`);
+    }
+
+    // Broadcast the flipped card info
+    io.in(lobbyId).emit('cardFlipped', { username, cardImage });
+
+    // Here, you can add logic to handle what happens after the card is flipped, such as checking for matches or updating scores.
+  } else {
+    console.log(`Could not determine player role for username: ${username}`);
+  }
 
   if (lobbiesInfo[lobbyId] && username) {
       if (!lobbiesInfo[lobbyId].flippedCardsThisRound.includes(username)) {
@@ -551,14 +621,13 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
         lobbiesInfo[lobbyId].flippedCardsThisRound.push(username);
       } else if (lobbiesInfo[lobbyId].flippedCardsThisRound.length >= 2) {
           const firstPlayerFlip = lobbiesInfo[lobbyId].firstFlipInfo;
-
           if (firstPlayerFlip.username !== username) {
             // Send the first player's flip to the second player
             socket.emit('opponentCardFlipped', firstPlayerFlip);
       
-            if (lobbiesInfo[lobbyId].firstFlipInfo && lobbiesInfo[lobbyId].firstFlipInfo.socketId) {
-              const firstPlayerSocketId = lobbiesInfo[lobbyId].firstFlipInfo.socketId;
-              io.to(firstPlayerSocketId).emit('opponentCardFlipped', { username, cardImage, position });
+          if (lobbiesInfo[lobbyId].firstFlipInfo && lobbiesInfo[lobbyId].firstFlipInfo.socketId) {
+            const firstPlayerSocketId = lobbiesInfo[lobbyId].firstFlipInfo.socketId;
+            io.to(firstPlayerSocketId).emit('opponentCardFlipped', { username, cardImage, position });
           }
           }
           lobbiesInfo[lobbyId].flippedCardsThisRound = [];
@@ -568,6 +637,8 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
           io.in(lobbyId).emit('enableSelection');
       }
   }
+  //console.log(`Played cards by Player 1 (${lobbiesInfo[lobbyId].player1}):`, lobbiesInfo[lobbyId].PlayedCards.player1);
+  //console.log(`Played cards by Player 2 (${lobbiesInfo[lobbyId].player2}):`, lobbiesInfo[lobbyId].PlayedCards.player2);
 });
 });
 
@@ -610,7 +681,3 @@ function removeDeckForLobby(lobbyId) {
       console.log(`Deck for lobby ${lobbyId} removed.`);
   }
 }
-
-// socketsIO
-// Listen on the new server, not the app
-server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
