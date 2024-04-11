@@ -539,9 +539,6 @@ socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
             lobbiesInfo[lobbyId].submittedCards = {};
         }
 
-        // Determine the player's key based on username
-        const playerKey = lobbiesInfo[lobbyId].player1 === username ? 'player1' : 'player2';
-
         // Store the submitted cards for the user
         lobbiesInfo[lobbyId].submittedCards[username] = selectedCards;
 
@@ -672,13 +669,11 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
             //console.log('playerReturnCards:', playerReturnCards)
             io.to(lobbyId).emit('returnCardsToHand', playerReturnCards);
             moveToDiscard(lobbyId);
-            //console.log(lobbiesInfo[lobbyId].Discard);
-            //console.log(lobbiesInfo[lobbyId].submittedCards[lobbiesInfo[lobbyId].player1]);
-
             // Emit round winner event after 3 seconds
             setTimeout(() => {
                 io.to(lobbyId).emit('roundWinner', { winner });
             }, 3000);
+            resetGameField(lobbyId);
         }
         else{
            // Emit an event to re-enable selection
@@ -782,4 +777,29 @@ function returnUnplayedCardToHand(lobbyId) {
       }
     });
     return playerReturnCards;
+}
+
+function resetGameField(lobbyId) {
+  // Reset Played Cards
+  console.log('reset Called');
+  const players = ['player1', 'player2'];
+  players.forEach(player => {
+      lobbiesInfo[lobbyId].PlayedCards[player].forEach(card => {
+          card.Type = "";
+          card.Faction = "";
+          card.Ability = false;
+          card.Might = false;
+          card.Mind = false;
+          card.Value = false;
+          card.Priority = 0;
+          card.InternalID = "";
+          card.State = 0;
+      });
+  });
+
+  // Optionally reset scores or other game state elements here
+  lobbiesInfo[lobbyId].flippedCardsThisRound = [];
+
+  // Notify all clients in the lobby to reset their game fields
+  io.to(lobbyId).emit('resetGameField');
 }

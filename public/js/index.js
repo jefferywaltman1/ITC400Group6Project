@@ -400,5 +400,52 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    socket.on('resetGameField', function() {
+        console.log('Reset Game Field event received');
+        
+        // Resetting all cards to their back images and reapplying grayscale
+        const allCards = document.querySelectorAll('.game-field .card');
+        allCards.forEach(card => {
+            card.style.backgroundImage = "url('/images/Cardback.png')";
+            card.style.filter = 'grayscale(100%)'; // Reapply grayscale to make them look inactive
+            card.classList.remove('selected', 'flippedCard'); // Remove selected or flipped classes if any
+        });
+    
+        // Clear any dynamically added cards in the game field
+        const cardSlots = document.querySelectorAll('.game-field .card-slot');
+        cardSlots.forEach(slot => {
+            while (slot.firstChild) {
+                slot.removeChild(slot.firstChild); // Remove all child elements
+            }
+    
+            // Optionally, re-add a default card back to each slot if that's the initial state
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card';
+            cardDiv.style.backgroundImage = "url('/images/Cardback.png')";
+            slot.appendChild(cardDiv);
+        });
+    
+        // Reset scores displayed on the client side
+        document.querySelector('.PlayerScoreValue').textContent = '0';
+        document.querySelector('.OpponentScoreValue').textContent = '0';
+    
+        // Hide any gameplay specific notices or buttons that shouldn't be visible at the start
+        document.getElementById('NoticeText').style.display = 'none';
+        document.getElementById('WaitFlipText').style.display = 'none'; // Explicitly hide the WaitFlipText
+        document.querySelector('.SubmitHand').style.display = 'none';
+        document.querySelector('.PickFourText').style.display = 'block';
+        document.querySelector('.SubmitFlip').style.display = 'none'; // Ensure flip card button is also hidden
+    
+        // Additional UI elements that might need resetting
+        resetAdditionalUI();
+    });
+    
+    function resetAdditionalUI() {
+        // Reset any other UI elements as needed, e.g., clearing text fields, hiding modals, etc.
+        document.querySelectorAll('.RoundWinPopup, .StartPopup').forEach(popup => {
+            popup.style.display = 'none'; // Hide any popups
+        });
+    }
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });
