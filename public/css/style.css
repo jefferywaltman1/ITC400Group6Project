@@ -945,7 +945,6 @@ table tr:first-child th:last-child{
         cursor: pointer;
         margin: 0;
         height: 0;
-        transform: translateY(10vh)
         }
 
     .PlayerScoreText{
@@ -974,6 +973,7 @@ table tr:first-child th:last-child{
         cursor: pointer;
         margin: 0;
         height: 0;
+        transform: translateY(10vh); 
         }
     .PlayerScoreValue{
         font-family: 'Jockey One';
@@ -990,7 +990,7 @@ table tr:first-child th:last-child{
     .ScoreDiv{
         margin-top: 10vh;
         position: absolute;
-        display: inline-flex;
+        display: none;
         width: 10vw;
         right: 20vw;
         flex-direction: column;
