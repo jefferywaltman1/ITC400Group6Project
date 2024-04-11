@@ -376,6 +376,17 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.OpponentScoreValue').textContent = player1Score;
         }
         console.log('UpdateScore Trigger');
+    });
+    
+    socket.on('roundWinner', ({ winner }) => {
+        // Handle 'Tie' situation
+        let winnerText = winner === 'Tie' ? 'The round is a tie!' : `${winner} Wins the Round`;
+    
+        // Update the RoundWinPopup text with the winner
+        document.querySelector('.RoundWinPopup .HeaderText').textContent = winnerText;
+    
+        // Display the RoundWinPopup
+        document.querySelector('.RoundWinPopup').style.display = 'inline-flex';
     });    
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

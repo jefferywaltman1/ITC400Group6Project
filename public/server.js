@@ -411,6 +411,7 @@ let lobbiesInfo = {};
             player2Wins: 0,
             readyPlayers: [],
             flippedCardsThisRound: [],
+            RoundPlayed: 0,
             PlayedCards: {
               player1: [
                   { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 },
@@ -645,8 +646,38 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
           lobbiesInfo[lobbyId].flippedCardsThisRound = [];
           delete lobbiesInfo[lobbyId].firstFlipInfo;
 
-          // Emit an event to re-enable selection
-          io.in(lobbyId).emit('enableSelection');
+          const allCardsFilled = (playedCards) => {
+            return playedCards.every(card => card.InternalID !== "");
+        };
+
+          if (allCardsFilled(lobbiesInfo[lobbyId].PlayedCards.player1) && allCardsFilled(lobbiesInfo[lobbyId].PlayedCards.player2)) {
+            // Determine round winner based on scores
+            let winner;
+            if (player1Score > player2Score) {
+                winner = lobbiesInfo[lobbyId].player1;
+                lobbiesInfo[lobbyId].player1Wins++;
+            } else if (player2Score > player1Score) {
+                winner = lobbiesInfo[lobbyId].player2;
+                lobbiesInfo[lobbyId].player2Wins++;
+            } else {
+                lobbiesInfo[lobbyId].player1Wins++;
+                lobbiesInfo[lobbyId].player2Wins++;
+                winner = 'Tie'; // Handle a tie situation
+            }
+            lobbiesInfo[lobbyId].RoundPlayed++;
+
+            console.log('-P1 Score: ',player1Score, ' -P2 Score:' ,player2Score,' -Winner: ', winner, 'P1Wins:', lobbiesInfo[lobbyId].player1Wins,'P2Wins:', lobbiesInfo[lobbyId].player2Wins )
+
+            
+            // Emit round winner event after 3 seconds
+            setTimeout(() => {
+                io.to(lobbyId).emit('roundWinner', { winner });
+            }, 3000);
+        }
+        else{
+           // Emit an event to re-enable selection
+           io.in(lobbyId).emit('enableSelection');
+        }
       }
   }
   //console.log(`Played cards by Player 1 (${lobbiesInfo[lobbyId].player1}):`, lobbiesInfo[lobbyId].PlayedCards.player1);
