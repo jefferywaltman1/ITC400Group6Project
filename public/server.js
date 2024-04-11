@@ -412,6 +412,7 @@ let lobbiesInfo = {};
             readyPlayers: [],
             flippedCardsThisRound: [],
             RoundPlayed: 0,
+            Discard: [],
             PlayedCards: {
               player1: [
                   { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 },
@@ -668,7 +669,9 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
 
             console.log('-P1 Score: ',player1Score, ' -P2 Score:' ,player2Score,' -Winner: ', winner, 'P1Wins:', lobbiesInfo[lobbyId].player1Wins,'P2Wins:', lobbiesInfo[lobbyId].player2Wins )
 
-            
+            moveToDiscard(lobbyId);
+            console.log(lobbiesInfo[lobbyId].Discard);
+
             // Emit round winner event after 3 seconds
             setTimeout(() => {
                 io.to(lobbyId).emit('roundWinner', { winner });
@@ -723,4 +726,26 @@ function removeDeckForLobby(lobbyId) {
       delete lobbyDecks[lobbyId]; // Remove the deck from the map
       console.log(`Deck for lobby ${lobbyId} removed.`);
   }
+}
+
+function moveToDiscard(lobbyId) {
+  const player1Cards = lobbiesInfo[lobbyId].PlayedCards.player1;
+  const player2Cards = lobbiesInfo[lobbyId].PlayedCards.player2;
+
+  player1Cards.forEach(card => {
+      if (card.InternalID) {
+          lobbiesInfo[lobbyId].Discard.push(card.InternalID);
+          card.InternalID = ""; // Optionally clear the InternalID if you're resetting the card
+      }
+  });
+
+  player2Cards.forEach(card => {
+      if (card.InternalID) {
+          lobbiesInfo[lobbyId].Discard.push(card.InternalID);
+          card.InternalID = ""; // Optionally clear the InternalID if you're resetting the card
+      }
+  });
+
+  // Emit an update to clients if needed
+  io.to(lobbyId).emit('discardUpdated', { discard: lobbiesInfo[lobbyId].Discard });
 }
