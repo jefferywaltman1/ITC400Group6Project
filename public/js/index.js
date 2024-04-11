@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const noticeText = document.getElementById('NoticeText');
     const gameField = document.querySelector('.game-field');
     let selectionEnabled = true;
+    let currentUserRole;
     document.getElementById('WaitFlipText').style.display = 'none';
 
 
@@ -15,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (lobbyId) {
         socket.emit('joinLobby', { lobbyId: lobbyId }); // Corrected from 'requestJoinLobby' based on your server code
     }
+
+    socket.on('playerRole', function(data) {
+        currentUserRole = data.role;
+        console.log(`Current user role: ${currentUserRole}`); // Just for debugging
+    });
 
     socket.on('updatePlayerCount', ({ count, lobbyId: receivedLobbyId }) => {
         if (lobbyId === receivedLobbyId) {
@@ -353,6 +359,23 @@ document.addEventListener('DOMContentLoaded', function() {
           slotToReplace.style.backgroundImage = `url(${cardImage})`;
         }
       });
-             
+
+      socket.on('bothPlayersFlipped', function() {
+        // Show the ScoreDiv by changing its display property
+        document.querySelector('.ScoreDiv').style.display = 'inline-flex';
+    });
+
+    socket.on('updateScores', function({ player1Score, player2Score }) {
+        // Assuming you know the client's role (player1 or player2), update the scores accordingly
+        // For demonstration, let's assume currentUserRole is a variable you've set to 'player1' or 'player2'
+        if (currentUserRole === 'player1') {
+            document.querySelector('.PlayerScoreValue').textContent = player1Score;
+            document.querySelector('.OpponentScoreValue').textContent = player2Score;
+        } else {
+            document.querySelector('.PlayerScoreValue').textContent = player2Score;
+            document.querySelector('.OpponentScoreValue').textContent = player1Score;
+        }
+        console.log('UpdateScore Trigger');
+    });    
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

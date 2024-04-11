@@ -467,6 +467,12 @@ let lobbiesInfo = {};
       console.log('Player 2 set to', lobbiesInfo[lobbyId].player2);
   }
 
+    if (username === lobbiesInfo[lobbyId].player1) {
+      socket.emit('playerRole', { role: 'player1' });
+  } else if (username === lobbiesInfo[lobbyId].player2) {
+      socket.emit('playerRole', { role: 'player2' });
+  }
+
     if (!lobbiesInfo[lobbyId].readyPlayers.includes(username)) {
       lobbiesInfo[lobbyId].readyPlayers.push(username);
     }
@@ -630,6 +636,12 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
             io.to(firstPlayerSocketId).emit('opponentCardFlipped', { username, cardImage, position });
           }
           }
+          const player1Score = lobbiesInfo[lobbyId].PlayedCards.player1.reduce((acc, card) => acc + card.Value, 0);
+          const player2Score = lobbiesInfo[lobbyId].PlayedCards.player2.reduce((acc, card) => acc + card.Value, 0);
+
+          // Emit an event with the scores to both players in the lobby
+          io.to(lobbyId).emit('updateScores', { player1Score, player2Score });
+          io.to(lobbyId).emit('bothPlayersFlipped');
           lobbiesInfo[lobbyId].flippedCardsThisRound = [];
           delete lobbiesInfo[lobbyId].firstFlipInfo;
 
