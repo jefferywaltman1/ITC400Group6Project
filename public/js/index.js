@@ -387,6 +387,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Display the RoundWinPopup
         document.querySelector('.RoundWinPopup').style.display = 'inline-flex';
-    });    
+    });
+    
+    socket.on('returnCardsToHand', function(data) {
+        for (const [username, card] of Object.entries(data)) {
+            if (username === currentUserUsername) {  // assuming currentUserUsername is the logged-in user's username
+                const hand = document.querySelector('.hand');
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+                cardDiv.style.backgroundImage = `url(${card})`;
+                hand.appendChild(cardDiv);
+            }
+        }
+    });
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

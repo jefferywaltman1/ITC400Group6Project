@@ -399,7 +399,6 @@ let lobbiesInfo = {};
   io.on('connection', (socket) => {
     const session = socket.handshake.session;
     
-    console.log('User connected:', socket.handshake.session.username);
     socket.on('joinLobby', ({ lobbyId }) => {
       if (!lobbyCounts[lobbyId]) {
         lobbyCounts[lobbyId] = 0;
@@ -669,8 +668,12 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
 
             console.log('-P1 Score: ',player1Score, ' -P2 Score:' ,player2Score,' -Winner: ', winner, 'P1Wins:', lobbiesInfo[lobbyId].player1Wins,'P2Wins:', lobbiesInfo[lobbyId].player2Wins )
 
+            const playerReturnCards = returnUnplayedCardToHand(lobbyId);
+            //console.log('playerReturnCards:', playerReturnCards)
+            io.to(lobbyId).emit('returnCardsToHand', playerReturnCards);
             moveToDiscard(lobbyId);
-            console.log(lobbiesInfo[lobbyId].Discard);
+            //console.log(lobbiesInfo[lobbyId].Discard);
+            //console.log(lobbiesInfo[lobbyId].submittedCards[lobbiesInfo[lobbyId].player1]);
 
             // Emit round winner event after 3 seconds
             setTimeout(() => {
@@ -748,4 +751,35 @@ function moveToDiscard(lobbyId) {
 
   // Emit an update to clients if needed
   io.to(lobbyId).emit('discardUpdated', { discard: lobbiesInfo[lobbyId].Discard });
+}
+
+function returnUnplayedCardToHand(lobbyId) {
+  const players = ['player1', 'player2'];
+  const playerReturnCards = {};
+
+  players.forEach(player => {
+    let submittedCardPaths; // Declare variable outside of if/else to increase scope
+
+    if (player === 'player1') {
+      submittedCardPaths = lobbiesInfo[lobbyId].submittedCards[lobbiesInfo[lobbyId].player1];
+    } else {
+      submittedCardPaths = lobbiesInfo[lobbyId].submittedCards[lobbiesInfo[lobbyId].player2];
+    }
+    
+    const playedCardIDs = lobbiesInfo[lobbyId].PlayedCards[player].map(card => card.InternalID.split('/')[2].split('_')[0]);
+
+        // Find unplayed card paths
+        const unplayedCardPaths = submittedCardPaths.filter(path => {
+            const cardId = path.split('/')[2].split('_')[0];
+            return !playedCardIDs.includes(cardId);
+        });
+
+        console.log('unplayedCardPaths:', unplayedCardPaths);
+        if (player === 'player1') {
+          playerReturnCards[lobbiesInfo[lobbyId].player1] = unplayedCardPaths[0]; // Just taking the first unplayed card for this example
+      }else{
+          playerReturnCards[lobbiesInfo[lobbyId].player2] = unplayedCardPaths[0];
+      }
+    });
+    return playerReturnCards;
 }
