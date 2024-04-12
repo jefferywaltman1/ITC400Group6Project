@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const socket = io(); // This should be at the top level, ensuring 'socket' is accessible
     const urlParams = new URLSearchParams(window.location.search);
     const lobbyId = urlParams.get('lobbyId');
-    const selectedCards = [];
+    let selectedCards = [];
     const submitFlipBtn = document.querySelector('.SubmitFlip');
     const noticeText = document.getElementById('NoticeText');
     const gameField = document.querySelector('.game-field');
@@ -175,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       socket.on('startPickingPhase', function() {
+        console.log(selectedCards);
         document.querySelector('.PickFourText').style.display = 'block'; // Assuming default is 'none'
         document.querySelector('.SubmitHand').style.display = 'flex'; // Assuming default is 'none'
     });
@@ -436,6 +437,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.SubmitHand').style.display = 'none';
         document.querySelector('.PickFourText').style.display = 'block';
         document.querySelector('.SubmitFlip').style.display = 'none'; // Ensure flip card button is also hidden
+        selectedCards = [];
+        document.querySelectorAll('.card').forEach(card => {
+            card.classList.remove('selected');
+        });
     
         // Additional UI elements that might need resetting
         resetAdditionalUI();

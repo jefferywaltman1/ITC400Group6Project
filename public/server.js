@@ -678,7 +678,7 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
               // Emit an event to all clients in the lobby to show the hand
               io.to(lobbyId).emit('showHand');
               dealCardToAllInLobby(lobbyId);
-              
+              io.to(lobbyId).emit('startPickingPhase');
           }else{
             dealCardToAllInLobby(lobbyId);
           }
