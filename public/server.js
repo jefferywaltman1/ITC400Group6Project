@@ -12,6 +12,7 @@ const sharedsession = require("express-socket.io-session");
 const fs = require('fs');
 const csv = require('csv-parser');
 const cardMetadata = {}
+let BothHandsUpdate = 0;
 
 fs.createReadStream('public/DLCardMetadata.csv')
   .pipe(csv())
@@ -461,7 +462,7 @@ let lobbiesInfo = {};
   });
 
   socket.on('updateHand', ({ lobbyId, username, hand }) => {
-    console.log('updateHand triggered')
+    //console.log('updateHand triggered')
     if (lobbiesInfo[lobbyId]) {
         if (lobbiesInfo[lobbyId].users.includes(username)) {
             const playerIndex = lobbiesInfo[lobbyId].users.indexOf(username);
@@ -470,9 +471,13 @@ let lobbiesInfo = {};
             } else if (playerIndex === 1) {  // Assuming the second user in the array is player2
                 lobbiesInfo[lobbyId].hands.player2 = hand;
             }
-            console.log(`Hands after update for lobby ${lobbyId}:`, lobbiesInfo[lobbyId].hands);
+            //console.log(`Hands after update for lobby ${lobbyId}:`, lobbiesInfo[lobbyId].hands);
         }
     }
+    if (lobbiesInfo[lobbyId].RoundPlayed === 2) {
+      if(BothHandsUpdate === 1){LastAutoSubmit(lobbyId);}
+      else{BothHandsUpdate++}
+      }
   });
 
   socket.on('startGame', ({ lobbyId }) => {
@@ -726,6 +731,42 @@ function afterRoundFunctions(lobbyId, winner){
     dealCardToAllInLobby(lobbyId);
   }
   lobbiesInfo[lobbyId].submittedCards = { };
+}
+
+function LastAutoSubmit(lobbyId){
+  //const username = socket.handshake.session.username;
+  let selectedCards = [];
+  let opponentUsername = {};
+  let username = {};
+  const players = ['player1', 'player2'];
+  players.forEach(player => {
+    if (player === 'player1') {
+      selectedCards = lobbiesInfo[lobbyId].hands.player1;
+      opponentUsername = lobbiesInfo[lobbyId].player2;
+      username = lobbiesInfo[lobbyId].player1;
+    } else {
+      selectedCards = lobbiesInfo[lobbyId].hands.player2;
+      opponentUsername = lobbiesInfo[lobbyId].player1;
+      username = lobbiesInfo[lobbyId].player2;
+    }
+
+    lobbiesInfo[lobbyId].submittedCards[username] = selectedCards;
+
+    // Notify the opponent immediately that this player has submitted their cards
+    if (opponentUsername) {
+      io.in(lobbyId).emit('updateGameField', {
+          player: username, // Emitting 'username' indicates who the submission is from
+          cards: selectedCards // This could be replaced with a placeholder if actual cards should not be revealed
+      });
+    }
+    io.in(lobbyId).emit('displaySubmittedCards', {
+      username: username,
+      cards: lobbiesInfo[lobbyId].submittedCards[username]
+    });
+  });
+      console.log('submitted Cards In SumitSelectedCards', selectedCards); // Assuming 2 players per lobby
+      io.in(lobbyId).emit('bothPlayersSubmitted');
+      io.in(lobbyId).emit('enableSelection');
 }
 
 function updatePlayerCountInDb(lobbyId) {

@@ -233,6 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     socket.on('displaySubmittedCards', ({ username, cards }) => {
         // Only act if the current user is the one who submitted the cards
+        console.log('Cards from displaySubmitted: ', cards)
         if (currentUserUsername === username) {
             // Find the container where to append the cards (assuming the first 4 card slots are for the player)
             const cardSlots = document.querySelectorAll('.game-field .card-slot'); // Ensure your HTML has these containers
