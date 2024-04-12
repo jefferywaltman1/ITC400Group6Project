@@ -479,5 +479,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    socket.on('gameOver', function(data) {
+        const gameWinPopup = document.querySelector('.GameWinPopup');
+        const headerText = gameWinPopup.querySelector('.HeaderText');
+        headerText.textContent = `${data.winner} Wins the Game!`;
+        gameWinPopup.style.display = 'inline-flex';
+        
+        // Optionally disable game interactions or setup a redirect
+        // For example, disable buttons or hide elements
+        document.querySelector('.SubmitHand').style.display = 'none';
+        document.querySelector('.SubmitFlip').style.display = 'none';
+    });    
+    const exitGameButton = document.querySelector('.ExitGameButton');
+    if (exitGameButton) {
+        exitGameButton.addEventListener('click', function() {
+            // Redirect to the lobby page
+            window.location.href = '/Lobby';
+        });
+    }
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

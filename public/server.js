@@ -673,6 +673,13 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
             moveToDiscard(lobbyId);
             // Emit round winner event after 3 seconds
             setTimeout(() => {
+              if (lobbiesInfo[lobbyId].player1Wins > 1) {
+                io.in(lobbyId).emit('gameOver', { winner: lobbiesInfo[lobbyId].player1 });
+                return; // Stop further execution
+            } else if (lobbiesInfo[lobbyId].player2Wins > 1) {
+                io.in(lobbyId).emit('gameOver', { winner: lobbiesInfo[lobbyId].player2 });
+                return; // Stop further execution
+            }
               afterRoundFunctions(lobbyId, winner);
             }, 3000);
         }
@@ -817,4 +824,6 @@ function resetGameField(lobbyId) {
 
   // Notify all clients in the lobby to reset their game fields
   io.to(lobbyId).emit('resetGameField');
+
+  
 }
