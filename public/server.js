@@ -559,8 +559,10 @@ socket.on('submitSelectedCards', ({ lobbyId, selectedCards }) => {
       cards: lobbiesInfo[lobbyId].submittedCards[username]
     });
 
-    if (Object.keys(lobbiesInfo[lobbyId].submittedCards).length === 2) { // Assuming 2 players per lobby
+    if (Object.keys(lobbiesInfo[lobbyId].submittedCards).length === 2) {
+      console.log('submitted Cards In SumitSelectedCards', lobbiesInfo[lobbyId].submittedCards); // Assuming 2 players per lobby
       io.in(lobbyId).emit('bothPlayersSubmitted');
+      io.in(lobbyId).emit('enableSelection');
   }
 });
 
@@ -671,18 +673,8 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
             moveToDiscard(lobbyId);
             // Emit round winner event after 3 seconds
             setTimeout(() => {
-                io.to(lobbyId).emit('roundWinner', { winner });
-                
+              afterRoundFunctions(lobbyId, winner);
             }, 3000);
-            resetGameField(lobbyId);
-            if (lobbiesInfo[lobbyId].RoundPlayed !== 2) {
-              // Emit an event to all clients in the lobby to show the hand
-              io.to(lobbyId).emit('showHand');
-              dealCardToAllInLobby(lobbyId);
-              io.to(lobbyId).emit('startPickingPhase');
-          }else{
-            dealCardToAllInLobby(lobbyId);
-          }
         }
         else{
            // Emit an event to re-enable selection
@@ -694,6 +686,20 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
   //console.log(`Played cards by Player 2 (${lobbiesInfo[lobbyId].player2}):`, lobbiesInfo[lobbyId].PlayedCards.player2);
 });
 });
+
+function afterRoundFunctions(lobbyId, winner){
+  io.to(lobbyId).emit('roundWinner', { winner });
+  resetGameField(lobbyId);
+  if (lobbiesInfo[lobbyId].RoundPlayed !== 2) {
+    // Emit an event to all clients in the lobby to show the hand
+    io.to(lobbyId).emit('showHand');
+    dealCardToAllInLobby(lobbyId);
+    io.to(lobbyId).emit('startPickingPhase');
+  }else{
+    dealCardToAllInLobby(lobbyId);
+  }
+  lobbiesInfo[lobbyId].submittedCards = { };
+}
 
 function updatePlayerCountInDb(lobbyId) {
   // Use the current count from lobbyCounts for the specified lobbyId

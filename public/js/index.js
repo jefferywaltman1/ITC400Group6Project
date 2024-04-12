@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function resetAdditionalUI() {
         // Reset any other UI elements as needed, e.g., clearing text fields, hiding modals, etc.
-        document.querySelectorAll('.RoundWinPopup, .StartPopup').forEach(popup => {
+        document.querySelectorAll('.StartPopup').forEach(popup => {
             popup.style.display = 'none'; // Hide any popups
         });
     }
