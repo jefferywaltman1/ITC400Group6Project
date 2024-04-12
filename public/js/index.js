@@ -497,7 +497,11 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('gameOver', function(data) {
         const gameWinPopup = document.querySelector('.GameWinPopup');
         const headerText = gameWinPopup.querySelector('.HeaderText');
-        headerText.textContent = `${data.winner} Wins the Game!`;
+        if (data.winner === 'Tie') {
+            headerText.textContent = `The Game is a Tie!`;
+        } else {
+            headerText.textContent = `${data.winner} Wins the Game!`;
+        }
         gameWinPopup.style.display = 'inline-flex';
         
         // Optionally disable game interactions or setup a redirect

@@ -698,10 +698,16 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
             moveToDiscard(lobbyId);
             // Emit round winner event after 3 seconds
             setTimeout(() => {
-              if (lobbiesInfo[lobbyId].player1Wins > 1) {
+              if (lobbiesInfo[lobbyId].player1Wins > 1 && lobbiesInfo[lobbyId].player2Wins > 1) {
+                // Both players have more than one win, declare a tie
+                io.in(lobbyId).emit('gameOver', { winner: 'Tie' });
+                return; // Stop further execution
+            } else if (lobbiesInfo[lobbyId].player1Wins > 1) {
+                // Player 1 has more than one win and wins the game
                 io.in(lobbyId).emit('gameOver', { winner: lobbiesInfo[lobbyId].player1 });
                 return; // Stop further execution
             } else if (lobbiesInfo[lobbyId].player2Wins > 1) {
+                // Player 2 has more than one win and wins the game
                 io.in(lobbyId).emit('gameOver', { winner: lobbiesInfo[lobbyId].player2 });
                 return; // Stop further execution
             }
