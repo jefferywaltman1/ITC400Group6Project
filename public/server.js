@@ -649,7 +649,7 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
             return playedCards.every(card => card.InternalID !== "");
         };
 
-          if (allCardsFilled(lobbiesInfo[lobbyId].PlayedCards.player1) && allCardsFilled(lobbiesInfo[lobbyId].PlayedCards.player2)) {
+        if (allCardsFilled(lobbiesInfo[lobbyId].PlayedCards.player1) && allCardsFilled(lobbiesInfo[lobbyId].PlayedCards.player2)) {
             // Determine round winner based on scores
             let winner;
             if (player1Score > player2Score) {
