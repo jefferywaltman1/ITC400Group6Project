@@ -790,7 +790,7 @@ table tr:first-child th:last-child{
         font-family: 'Jockey One';
         font-style: normal;
         font-weight: 400;
-        font-size: 2.2rem;
+        font-size: 1.9rem;
         line-height: 130%;
         color: #fff;
         flex-direction: column;
@@ -834,8 +834,8 @@ table tr:first-child th:last-child{
 
     .InteractionColumn{
         position: fixed;
-        right: 10vw;
-        width: fit-content;
+        right: 5vw;
+        width: 15vw;
         max-width: 20vw;
         display: inline-flex;
         height: 100vh;

@@ -397,6 +397,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
                 cardDiv.style.backgroundImage = `url(${card})`;
+                cardDiv.addEventListener('mouseenter', function() {
+                    showCardPreview(data.card);
+                });
+        
+                cardDiv.addEventListener('mouseleave', function() {
+                    clearCardPreview();
+                });
+        
+                cardDiv.addEventListener('click', function() {
+                    toggleCardSelection(cardDiv, data.card); // Pass card image as argument
+                });
+        
                 hand.appendChild(cardDiv);
             }
         }
