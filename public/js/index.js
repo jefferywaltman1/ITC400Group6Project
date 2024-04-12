@@ -447,5 +447,20 @@ document.addEventListener('DOMContentLoaded', function() {
             popup.style.display = 'none'; // Hide any popups
         });
     }
+
+    socket.on('showHand', function() {
+        // Assuming '.hand' is the class for the container of the hand cards
+        document.querySelector('.hand').style.display = 'flex';  // Change 'flex' to your preferred display style
+    });   
+    
+    const nextRoundButton = document.querySelector('.NextRoundButton');
+    if (nextRoundButton) {
+        nextRoundButton.addEventListener('click', function() {
+            const roundWinPopup = document.querySelector('.RoundWinPopup');
+            if (roundWinPopup) {
+                roundWinPopup.style.display = 'none';  // Hide the popup
+            }
+        });
+    }
     // Assuming the 'socket' variable is your connected Socket.IO client instance
 });

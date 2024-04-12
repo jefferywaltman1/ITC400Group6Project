@@ -674,6 +674,14 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
                 io.to(lobbyId).emit('roundWinner', { winner });
             }, 3000);
             resetGameField(lobbyId);
+            if (lobbiesInfo[lobbyId].RoundPlayed !== 2) {
+              // Emit an event to all clients in the lobby to show the hand
+              io.to(lobbyId).emit('showHand');
+              dealCardToAllInLobby(lobbyId);
+              
+          }else{
+            dealCardToAllInLobby(lobbyId);
+          }
         }
         else{
            // Emit an event to re-enable selection

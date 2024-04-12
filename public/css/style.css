@@ -935,16 +935,15 @@ table tr:first-child th:last-child{
     .OpponentScoreText{
         font-family: 'Jockey One';
         font-style: normal;
+        height: fit-content;
         font-weight: 400;
-        font-size: 2.2rem;
+        font-size: 2.0rem;
         line-height: 130%;
         text-decoration: underline;
         text-align: center;
         color: #D8762C;
-        align-items: center;
         cursor: pointer;
         margin: 0;
-        height: 0;
         }
 
     .PlayerScoreText{
@@ -956,24 +955,20 @@ table tr:first-child th:last-child{
         text-decoration: underline;
         text-align: center;
         color: #D8762C;
-        align-items: center;
         cursor: pointer;
-        margin-top: 20vh;
-        transform: translateY(20px);
+        margin: 0;
         }
     .OpponentScoreValue{
         font-family: 'Jockey One';
         font-style: normal;
         font-weight: 400;
-        font-size: 2.2rem;
+        font-size: 2.0rem;
         line-height: 130%;
         text-align: center;
         color: #D8762C;
-        align-items: center;
         cursor: pointer;
         margin: 0;
-        height: 0;
-        transform: translateY(10vh); 
+        height: fit-content;
         }
     .PlayerScoreValue{
         font-family: 'Jockey One';
@@ -983,7 +978,6 @@ table tr:first-child th:last-child{
         line-height: 130%;
         text-align: center;
         color: #D8762C;
-        align-items: center;
         cursor: pointer;
         margin: 0;
         }
@@ -1024,7 +1018,7 @@ table tr:first-child th:last-child{
         font-family: 'Jockey One';
         font-style: normal;
         font-weight: 400;
-        font-size: 2.2rem;
+        font-size: 2.0rem;
         line-height: 130%;
         color: #fff;
         flex-direction: column;
