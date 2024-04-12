@@ -281,6 +281,7 @@ function dealCardToAllInLobby(lobbyId) {
           socket.emit('dealCard', { card: `/images/${card}_dl.png` }); // Send the card to the individual socket
       });
   }
+  console.log('Hands:', lobbiesInfo[lobbyId].hands);
 }
 // lobbies
 // Assuming 'db' is your SQLite connection and 'io' is your Socket.IO instance
@@ -412,6 +413,10 @@ let lobbiesInfo = {};
             flippedCardsThisRound: [],
             RoundPlayed: 0,
             Discard: [],
+            hands:{
+              player1: [],
+              player2: []
+            },
             PlayedCards: {
               player1: [
                   { Type: "", Faction: "", Ability: false, Might: false, Mind: false, Value: false, Priority: 0, InternalID: "", State: 0 },
@@ -452,7 +457,22 @@ let lobbiesInfo = {};
         if (lobbyId) {
           dealCardToAllInLobby(lobbyId);
         }
-      });      
+      });   
+  });
+
+  socket.on('updateHand', ({ lobbyId, username, hand }) => {
+    console.log('updateHand triggered')
+    if (lobbiesInfo[lobbyId]) {
+        if (lobbiesInfo[lobbyId].users.includes(username)) {
+            const playerIndex = lobbiesInfo[lobbyId].users.indexOf(username);
+            if (playerIndex === 0) {  // Assuming the first user in the array is player1
+                lobbiesInfo[lobbyId].hands.player1 = hand;
+            } else if (playerIndex === 1) {  // Assuming the second user in the array is player2
+                lobbiesInfo[lobbyId].hands.player2 = hand;
+            }
+            console.log(`Hands after update for lobby ${lobbyId}:`, lobbiesInfo[lobbyId].hands);
+        }
+    }
   });
 
   socket.on('startGame', ({ lobbyId }) => {

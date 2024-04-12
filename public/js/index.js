@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const gameField = document.querySelector('.game-field');
     let selectionEnabled = true;
     let currentUserRole;
+    let currentHand = [];
     document.getElementById('WaitFlipText').style.display = 'none';
 
 
@@ -69,7 +70,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         hand.appendChild(cardDiv);
+        updateCurrentHandFromDOM();
+        const username = currentUserUsername;
+        console.log('current hand:', currentHand, 'username:', username);
+        socket.emit('updateHand', { lobbyId: lobbyId, username: username, hand: currentHand });
     });
+
+    function updateCurrentHandFromDOM() {
+        currentHand = [];
+        const cards = document.querySelectorAll('.hand .card');
+        cards.forEach(card => {
+            currentHand.push(card.style.backgroundImage.slice(5, -2)); // Remove `url("...")`
+        });
+    }
 
     gameField.addEventListener('mouseenter', function(event) {
         // Check if the event target (or any of its parents) has the class 'card' or 'flippedCard'
@@ -171,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelector('.Startbutton').addEventListener('click', function() {
         // Hide the popup and possibly notify the server to start the game
         document.querySelector('.StartPopup').style.display = 'none';
-        socket.emit('startGame', { lobbyId: lobbyId }); // You might want to implement this event on the server
+        socket.emit('startGame', { lobbyId: lobbyId });
       });
 
       socket.on('startPickingPhase', function() {
