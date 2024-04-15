@@ -57,7 +57,7 @@ app.use(express.json());
 
 const sessionMiddleware = session({
   store: new SQLiteStore({
-      db: 'mydatabase.db',
+      db: 'public/mydatabase.db',
       dir: './'
   }),
   secret: '642e745b83d3b9807cfabbf7352b0d6b08dee2dd8d10327e26ab566c8c918d5417953f869227200a38c91a6cc40194cc4c2d1a35d7ff879b25c9755dd74917f9',
@@ -76,7 +76,7 @@ io.use(sharedsession(sessionMiddleware, {
 //app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 // Database connection setup
-const db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('./public/mydatabase.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) return console.error(err.message);
   console.log('Connected to the SQLite database.');
 });
@@ -891,6 +891,4 @@ function resetGameField(lobbyId) {
 
   // Notify all clients in the lobby to reset their game fields
   io.to(lobbyId).emit('resetGameField');
-
-  
 }
