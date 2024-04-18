@@ -378,6 +378,9 @@ document.addEventListener('DOMContentLoaded', function() {
       socket.on('bothPlayersFlipped', function() {
         // Show the ScoreDiv by changing its display property
         document.querySelector('.ScoreDiv').style.display = 'inline-flex';
+        document.querySelector('.OpponentRoundDiv').style.display = 'inline-flex';
+        document.querySelector('.PlayerRoundDiv').style.display = 'inline-flex';
+        
     });
 
     socket.on('updateScores', function({ player1Score, player2Score }) {
@@ -517,4 +520,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     // Assuming the 'socket' variable is your connected Socket.IO client instance
+
+    //update each time a player wins a round
+    socket.on('updateRoundWins', function(data) {
+      
+        if (data.winner === 'Tie')
+        {
+            document.querySelector('.PlayerRoundValue').textContent = '0';
+            document.querySelector('.OpponentRoundValue').textContent = '0';
+        
+        } else if (currentUserRole === 'player1') {
+            document.querySelector('.PlayerRoundValue').textContent = data.player1Wins;
+            document.querySelector('.OpponentRoundValue').textContent = data.player2Wins;
+        } else {
+            document.querySelector('.PlayerRoundValue').textContent = data.player2Wins;
+            document.querySelector('.OpponentRoundValue').textContent = data.player1Wins;
+        }
+    });
+    
 });

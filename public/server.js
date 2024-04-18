@@ -690,6 +690,13 @@ socket.on('flipCard', ({ lobbyId, cardImage, position}) => {
             }
             lobbiesInfo[lobbyId].RoundPlayed++;
 
+            //update player round wins
+            io.to(lobbyId).emit('updateRoundWins', {
+              player1Wins: lobbiesInfo[lobbyId].player1Wins,
+              player2Wins: lobbiesInfo[lobbyId].player2Wins,
+              winner: winner
+            });
+
             console.log('-P1 Score: ',player1Score, ' -P2 Score:' ,player2Score,' -Winner: ', winner, 'P1Wins:', lobbiesInfo[lobbyId].player1Wins,'P2Wins:', lobbiesInfo[lobbyId].player2Wins )
 
             const playerReturnCards = returnUnplayedCardToHand(lobbyId);

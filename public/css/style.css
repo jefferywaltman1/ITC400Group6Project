@@ -1063,3 +1063,79 @@ table tr:first-child th:last-child{
         padding-bottom: 10px;
     }
     /* Adjust hover effect to only flip cards that aren't already selected */
+
+    /* Adding styling to the Round text and values */
+    .OpponentRoundDiv{
+        display: none;
+        position: absolute;
+        top: 10%; /* Adjust top distance from the top of the page */
+        left: 27%; /* Position it at the center horizontally */
+        align-items: center; /* Center its children vertically */
+        justify-content: center; /* Center its children horizontally */
+        flex-direction: column;
+    }
+
+    .PlayerRoundDiv{
+        display: none;
+        position: absolute;
+        top: 10%; /* Adjust top distance from the top of the page */
+        left: 54.7%; /* Position it at the center horizontally */
+        align-items: center; /* Center its children vertically */
+        justify-content: center; /* Center its children horizontally */
+        flex-direction: column;
+    }
+
+    .RoundDiv.h1 {
+        display: inline-block; /* Prevent stacking */
+        margin: 0 10px;
+    }
+
+    .OpponentRoundText{
+        font-family: 'Jockey One';
+        font-style: normal;
+        height: fit-content;
+        font-weight: 400;
+        font-size: 2.0rem;
+        line-height: 130%;
+        text-decoration: underline;
+        text-align: center;
+        color: #D8762C;
+        cursor: pointer;
+        margin: 0;
+        }
+
+    .PlayerRoundText{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        text-decoration: underline;
+        text-align: center;
+        color: #D8762C;
+        cursor: pointer;
+        margin: 0;
+        }
+    .OpponentRoundValue{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.0rem;
+        line-height: 130%;
+        text-align: center;
+        color: #D8762C;
+        cursor: pointer;
+        margin: 0;
+        height: fit-content;
+        }
+    .PlayerRoundValue{
+        font-family: 'Jockey One';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 2.2rem;
+        line-height: 130%;
+        text-align: center;
+        color: #D8762C;
+        cursor: pointer;
+        margin: 0;
+        }
