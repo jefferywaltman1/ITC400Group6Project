@@ -39,6 +39,7 @@ fs.createReadStream('public/DLCardMetadata.csv')
 // Setting EJS as the template engine and specifying the views directory
 app.set('view engine', 'ejs');
 const path = require('path');
+const { error } = require('console');
 app.set('views', path.join(__dirname));
 
 // Default route for the landing page, showing different content based on login status
@@ -391,6 +392,38 @@ app.post('/join-lobby/:id', (req, res) => {
     } else {
       // If the lobby is full, send an appropriate response
       res.send('Lobby is full.');
+    }
+  });
+});
+
+app.post('/join-lobby-locked', (req, res) => {
+  const { password, lobbyId } = req.body;
+  const maxPlayers = 2; // Define the maximum number of players allowed
+
+  // Query to check if the lobby is full
+  const sqlCheck = `SELECT playerCount FROM lobbies WHERE id = ? AND password = ?`;
+
+  db.get(sqlCheck, [lobbyId, password], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Error accessing the database.' + password + lobbyId + err.message);
+    } else if (row && row.playerCount < maxPlayers) {
+      // If the lobby is not full, update the playerCount
+      
+      const sqlUpdate = `UPDATE lobbies SET playerCount = playerCount + 1 WHERE id = ?`;
+
+      db.run(sqlUpdate, [lobbyId], function(err) {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send('Error joining lobby.');
+        } else {
+          // Redirect to the GameRoom with the lobbyId as a query parameter
+          res.redirect(`/GameRoom?lobbyId=${lobbyId}`);
+        }
+      });
+    } else {
+      // If the lobby is full, send an appropriate response
+      res.send('Unable to join lobby.');
     }
   });
 });

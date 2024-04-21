@@ -629,3 +629,34 @@ table tr:first-child th:last-child{
         height: 0%;
         margin: 0 auto;
         } 
+
+        .JoinLobbyScreenInputField{
+            width: 100%;
+            height: 7.3vh;
+            border-radius: 15px;
+            background-color: #fff;
+            border: 0;
+            font-family: 'Jockey One';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 2.2rem;
+            line-height: 130%;
+            color: #000000;
+        }
+
+        .PasswordPopup{
+            display: none;
+            position: fixed;
+            background-color: #545463;
+            border: 5px solid #D8762C;
+            border-radius: 20px;
+            width: 20vw;
+            height: fit-content;
+            flex-direction: column;
+            align-items: center;
+            z-index: 9999;
+            left: 50%;
+            transform: translate(-50%, -75%);
+            top: 50%;
+            padding-bottom: 10px;
+        }

@@ -48,14 +48,22 @@
                 <h1 class="HeaderText LobbyInfo"><%= lobby.lobbyName %></h1>
                 <h1 class="HeaderText LobbyInfo"><%= lobby.hostUsername %></h1>
                 <h1 class="HeaderText LobbyInfo"><%= lobby.isLocked ? 'Yes' : 'No' %></h1>
-                <form action="/join-lobby/<%= lobby.id %>" method="post">
-                    <input type="submit" value="JOIN" class="JoinButton">
+                <input onclick ="checkPassword('<%= lobby.isLocked %>', '<%= lobby.id %>' )" type="submit" value="JOIN" class="JoinButton">
                 </form>
             </div>
         <% }); %>
         <!-- End Of Template of lobbyroom -->
-    </div>
-    
+        </div>  
+        <div class="PasswordPopup" id="popup-window">
+            <h1 class="HeaderText">Please enter your password</h1>
+            <form action="/join-lobby-locked" method="post">
+            <label class="HeaderText NoUnderline" for="lname">PASSWORD</label><br>
+            <input class="JoinLobbyScreenInputField" type="password" id="lpassword" name="password" value=""><br>
+            <input type="hidden" id="lobbyId" name="lobbyId"><br>
+            <input type="submit" value="SUBMIT" class="LoginSubmitButton">
+        </form>
+          </div> 
     <script src="index.js"></script>
+    <script src="Functions.js"></script>
 </body>
 </html>
