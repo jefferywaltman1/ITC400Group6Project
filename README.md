@@ -40,8 +40,10 @@ Command to install sqlite: npm install sqlite. You also you can install the sqli
   ![Screenshot 2024-04-29 at 5 53 00 PM](https://github.com/jefferywaltman1/ITC400Group6Project/assets/61029938/a6572f7a-9611-4dc6-88ec-32f9e04a073a)
 
 STEP 4:
-After all of these packages have been installed, you can then run the command in the terminal: nodemon public/server.js.
+After all of these packages have been installed, you can then run the command in the terminal: nodemon {{File Location of Server.js}}.
 ![Screenshot 2024-04-29 at 5 57 13 PM](https://github.com/jefferywaltman1/ITC400Group6Project/assets/61029938/d998659d-87a8-4ed9-9855-7d8ba806908d)
 
 This command will output some data to the terminal letting you know the server is running on port 3000. You will need to CTRL click the hyperlink and it will then take you to the website/project we developed. From there you should be able to watch our demo provided in the presentation to test out our game!
+
+*Because it is a two player game you may need to open an additional incognito browser to connect to yourself.
 
