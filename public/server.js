@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use(express.static('public'));
+app.use(express.static(''));
 
 // Middleware for parsing request bodies and session handling
 app.use(express.urlencoded({ extended: true }));
