@@ -14,7 +14,7 @@ const csv = require('csv-parser');
 const cardMetadata = {}
 let BothHandsUpdate = 0;
 
-fs.createReadStream('public/DLCardMetadata.csv')
+fs.createReadStream('DLCardMetadata.csv')
   .pipe(csv())
   .on('data', (row) => {
     const key = row['Internal ID (String)'].match(/\d+/)[0]; // Extracts number from string like '/images/23_dl.png'
@@ -58,7 +58,7 @@ app.use(express.json());
 
 const sessionMiddleware = session({
   store: new SQLiteStore({
-      db: 'public/mydatabase.db',
+      db: 'mydatabase.db',
       dir: './'
   }),
   secret: '642e745b83d3b9807cfabbf7352b0d6b08dee2dd8d10327e26ab566c8c918d5417953f869227200a38c91a6cc40194cc4c2d1a35d7ff879b25c9755dd74917f9',
@@ -77,7 +77,7 @@ io.use(sharedsession(sessionMiddleware, {
 //app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 // Database connection setup
-const db = new sqlite3.Database('./public/mydatabase.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('./mydatabase.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) return console.error(err.message);
   console.log('Connected to the SQLite database.');
 });
